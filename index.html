@@ -317,7 +317,16 @@
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
     import { getDatabase, ref, set, update, onValue, push } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js';
     import { Html5Qrcode } from 'https://esm.sh/html5-qrcode@2.3.8';
-
+const firebaseConfig = {
+  apiKey: "AIzaSyCRKNP040IjGOqcLfta0Ca5i3k0ZNDUyK8",
+  authDomain: "chargenerfassung.firebaseapp.com",
+  databaseURL: "https://chargenerfassung-default-rtdb.firebaseio.com",
+  projectId: "chargenerfassung",
+  storageBucket: "chargenerfassung.firebasestorage.app",
+  messagingSenderId: "547039682500",
+  appId: "1:547039682500:web:0473da8ae96f4463a88e91",
+  measurementId: "G-X4G3E0K4R5",
+};
     const STORAGE_KEY = 'mb_charge_monitor_firebase_cfg';
     const LOCAL_DEMO_KEY = 'mb_charge_monitor_demo_data';
     const places = Array.from({ length: 30 }, (_, i) => `A${i + 1}`);
