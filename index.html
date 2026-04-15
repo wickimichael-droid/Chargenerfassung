@@ -317,19 +317,20 @@
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
     import { getDatabase, ref, set, update, onValue, push } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js';
     import { Html5Qrcode } from 'https://esm.sh/html5-qrcode@2.3.8';
-const firebaseConfig = {
-  apiKey: "AIzaSyCRKNP040IjGOqcLfta0Ca5i3k0ZNDUyK8",
-  authDomain: "chargenerfassung.firebaseapp.com",
-  databaseURL: "https://chargenerfassung-default-rtdb.firebaseio.com",
-  projectId: "chargenerfassung",
-  storageBucket: "chargenerfassung.firebasestorage.app",
-  messagingSenderId: "547039682500",
-  appId: "1:547039682500:web:0473da8ae96f4463a88e91",
-  measurementId: "G-X4G3E0K4R5",
-};
-    const STORAGE_KEY = 'mb_charge_monitor_firebase_cfg';
+
     const LOCAL_DEMO_KEY = 'mb_charge_monitor_demo_data';
     const places = Array.from({ length: 30 }, (_, i) => `A${i + 1}`);
+
+    const FIREBASE_CONFIG = {
+      apiKey: 'AIzaSyCRKNP040IjGOqcLfta0Ca5i3k0ZNDUyK8',
+      authDomain: 'chargenerfassung.firebaseapp.com',
+      databaseURL: 'https://chargenerfassung-default-rtdb.firebaseio.com',
+      projectId: 'chargenerfassung',
+      storageBucket: 'chargenerfassung.firebasestorage.app',
+      messagingSenderId: '547039682500',
+      appId: '1:547039682500:web:0473da8ae96f4463a88e91',
+      measurementId: 'G-X4G3E0K4R5',
+    };
 
     const state = {
       phase: 'place',
@@ -349,7 +350,7 @@ const firebaseConfig = {
 
     function defaultData() {
       const obj = {};
-      places.forEach(p => {
+      places.forEach((p) => {
         obj[p] = {
           place: p,
           status: 'ok',
@@ -357,37 +358,10 @@ const firebaseConfig = {
           charge2: '',
           updatedAt: '',
           operator: '',
-          acknowledged: true
+          acknowledged: true,
         };
       });
       return { places: obj, history: [] };
-    }
-
-    function getSavedConfig() {
-      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
-      catch { return {}; }
-    }
-
-    function saveConfigFields() {
-      const cfg = {
-        apiKey: el('cfg_apiKey').value.trim(),
-        authDomain: el('cfg_authDomain').value.trim(),
-        databaseURL: el('cfg_databaseURL').value.trim(),
-        projectId: el('cfg_projectId').value.trim(),
-        storageBucket: el('cfg_storageBucket').value.trim(),
-        messagingSenderId: el('cfg_messagingSenderId').value.trim(),
-        appId: el('cfg_appId').value.trim(),
-      };
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(cfg));
-      return cfg;
-    }
-
-    function fillConfigFields() {
-      const cfg = getSavedConfig();
-      Object.entries(cfg).forEach(([k, v]) => {
-        const node = el(`cfg_${k}`);
-        if (node) node.value = v || '';
-      });
     }
 
     function saveDemoData(data) {
@@ -401,8 +375,9 @@ const firebaseConfig = {
         saveDemoData(d);
         return d;
       }
-      try { return JSON.parse(raw); }
-      catch {
+      try {
+        return JSON.parse(raw);
+      } catch {
         const d = defaultData();
         saveDemoData(d);
         return d;
@@ -410,7 +385,7 @@ const firebaseConfig = {
     }
 
     function setView(name) {
-      ['scan', 'dashboard', 'setup'].forEach(v => el(`view-${v}`).classList.add('hidden'));
+      ['scan', 'dashboard', 'setup'].forEach((v) => el(`view-${v}`).classList.add('hidden'));
       el(`view-${name}`).classList.remove('hidden');
     }
 
@@ -429,6 +404,20 @@ const firebaseConfig = {
       el('currentPlace').textContent = state.currentPlace || '-';
       el('currentCharge1').textContent = state.charge1 || '-';
       el('currentCharge2').textContent = state.charge2 || '-';
+
+      const map = {
+        apiKey: FIREBASE_CONFIG.apiKey,
+        authDomain: FIREBASE_CONFIG.authDomain,
+        databaseURL: FIREBASE_CONFIG.databaseURL,
+        projectId: FIREBASE_CONFIG.projectId,
+        storageBucket: FIREBASE_CONFIG.storageBucket,
+        messagingSenderId: FIREBASE_CONFIG.messagingSenderId,
+        appId: FIREBASE_CONFIG.appId,
+      };
+      Object.entries(map).forEach(([key, value]) => {
+        const node = el(`cfg_${key}`);
+        if (node) node.value = value;
+      });
     }
 
     function setLastResult(kind, text) {
@@ -436,15 +425,9 @@ const firebaseConfig = {
       el('lastResult').innerHTML = `<span class="lamp ${map[kind] || ''}"></span><span>${text}</span>`;
     }
 
-    async function initFirebase(cfg) {
-      if (!cfg.apiKey || !cfg.databaseURL || !cfg.projectId || !cfg.appId) {
-        state.cloudReady = false;
-        state.liveData = loadDemoData();
-        renderAll();
-        return false;
-      }
+    async function initFirebase() {
       try {
-        state.app = initializeApp(cfg, `mb-${Date.now()}`);
+        state.app = initializeApp(FIREBASE_CONFIG, `mb-${Date.now()}`);
         state.db = getDatabase(state.app);
         state.cloudReady = true;
         onValue(ref(state.db, 'materialbahnhof'), (snapshot) => {
@@ -534,7 +517,7 @@ const firebaseConfig = {
       let active = 0;
       let fresh = 0;
 
-      places.forEach(place => {
+      places.forEach((place) => {
         const p = data[place] || { place, status: 'ok', acknowledged: true };
         if (p.status === 'error') active++;
         if (p.status === 'error' && !p.acknowledged) fresh++;
@@ -565,12 +548,12 @@ const firebaseConfig = {
       el('activeCount').textContent = String(active);
       el('newCount').textContent = String(fresh);
 
-      host.querySelectorAll('[data-ack]').forEach(btn => {
+      host.querySelectorAll('[data-ack]').forEach((btn) => {
         btn.addEventListener('click', async () => {
           await setPlaceMeta(btn.dataset.ack, { acknowledged: true });
         });
       });
-      host.querySelectorAll('[data-reset]').forEach(btn => {
+      host.querySelectorAll('[data-reset]').forEach((btn) => {
         btn.addEventListener('click', async () => {
           await setPlaceMeta(btn.dataset.reset, {
             status: 'ok',
@@ -586,7 +569,7 @@ const firebaseConfig = {
     function renderHistory() {
       const body = el('historyBody');
       const history = normalizeHistory(state.liveData?.history).slice(0, 200);
-      body.innerHTML = history.map(item => `
+      body.innerHTML = history.map((item) => `
         <tr>
           <td>${item.updatedAt || '-'}</td>
           <td>${item.place || '-'}</td>
@@ -701,24 +684,20 @@ const firebaseConfig = {
       }
     });
     el('saveConfig').addEventListener('click', async () => {
-      const cfg = saveConfigFields();
-      await initFirebase(cfg);
+      await initFirebase();
       await ensureBaseData();
-      setLastResult('ok', 'Konfiguration gespeichert. Cloud-Synchronisierung wurde gestartet.');
+      setLastResult('ok', 'Cloud-Verbindung wurde neu initialisiert.');
     });
     el('loadDemo').addEventListener('click', async () => {
-      localStorage.removeItem(STORAGE_KEY);
       state.cloudReady = false;
       state.liveData = loadDemoData();
       renderAll();
       setLastResult('ok', 'Demo-Modus ohne Cloud aktiv.');
     });
 
-    fillConfigFields();
-    state.liveData = loadDemoData();
     renderAll();
     resetFlow();
-    initFirebase(getSavedConfig()).then(ensureBaseData);
+    initFirebase().then(ensureBaseData);
   </script>
 </body>
 </html>
