@@ -12,167 +12,47 @@
       --muted: #94a3b8;
       --text: #e5e7eb;
       --ok: #22c55e;
-      --warn: #f59e0b;
       --error: #ef4444;
       --line: #334155;
       --accent: #38bdf8;
     }
     * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(180deg, #020617, var(--bg));
-      color: var(--text);
-    }
-    header {
-      padding: 18px 20px;
-      border-bottom: 1px solid var(--line);
-      position: sticky;
-      top: 0;
-      background: rgba(2, 6, 23, 0.96);
-      backdrop-filter: blur(8px);
-      z-index: 20;
-    }
+    body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: linear-gradient(180deg, #020617, var(--bg)); color: var(--text); }
+    header { padding: 18px 20px; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: rgba(2, 6, 23, 0.96); backdrop-filter: blur(8px); z-index: 20; }
     h1 { margin: 0 0 6px; font-size: 24px; }
     .sub { color: var(--muted); font-size: 14px; }
-    .wrap {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    .toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin: 14px 0 20px;
-    }
-    button, select, input {
-      border-radius: 10px;
-      border: 1px solid var(--line);
-      background: #0b1220;
-      color: var(--text);
-      padding: 10px 12px;
-      font-size: 14px;
-    }
-    button {
-      cursor: pointer;
-      background: #111827;
-    }
+    .wrap { max-width: 1400px; margin: 0 auto; padding: 20px; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin: 14px 0 20px; }
+    button, input { border-radius: 10px; border: 1px solid var(--line); background: #0b1220; color: var(--text); padding: 10px 12px; font-size: 14px; }
+    button { cursor: pointer; background: #111827; }
     button:hover { border-color: var(--accent); }
     .primary { background: #0c4a6e; }
-    .danger { background: #7f1d1d; }
     .success { background: #14532d; }
-    .grid {
-      display: grid;
-      gap: 16px;
-      grid-template-columns: repeat(12, 1fr);
-    }
-    .panel {
-      grid-column: span 12;
-      background: rgba(17, 24, 39, 0.9);
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      padding: 16px;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.25);
-    }
+    .grid { display: grid; gap: 16px; grid-template-columns: repeat(12, 1fr); }
+    .panel { grid-column: span 12; background: rgba(17, 24, 39, 0.9); border: 1px solid var(--line); border-radius: 18px; padding: 16px; box-shadow: 0 12px 30px rgba(0,0,0,0.25); }
     .panel.half { grid-column: span 6; }
     .panel.third { grid-column: span 4; }
     .title { margin: 0 0 12px; font-size: 18px; }
     .muted { color: var(--muted); }
-    .scan-row {
-      display: grid;
-      grid-template-columns: 180px 1fr;
-      gap: 10px;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-    .status-box {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 12px 14px;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      background: #0b1220;
-    }
-    .lamp {
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: #475569;
-      box-shadow: 0 0 0 2px rgba(255,255,255,0.05) inset;
-      display: inline-block;
-    }
+    .scan-row { display: grid; grid-template-columns: 180px 1fr; gap: 10px; align-items: center; margin-bottom: 10px; }
+    .status-box { display: inline-flex; align-items: center; gap: 10px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: #0b1220; }
+    .lamp { width: 18px; height: 18px; border-radius: 50%; background: #475569; box-shadow: 0 0 0 2px rgba(255,255,255,0.05) inset; display: inline-block; }
     .lamp.ok { background: var(--ok); box-shadow: 0 0 18px rgba(34,197,94,0.65); }
-    .lamp.warn { background: var(--warn); box-shadow: 0 0 18px rgba(245,158,11,0.65); }
     .lamp.error { background: var(--error); box-shadow: 0 0 20px rgba(239,68,68,0.75); }
-    .places {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 12px;
-    }
-    .place-card {
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 12px;
-      background: #0b1220;
-      min-height: 124px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .place-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .place-name {
-      font-weight: 700;
-      font-size: 20px;
-    }
+    .places { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+    .place-card { border: 1px solid var(--line); border-radius: 16px; padding: 12px; background: #0b1220; min-height: 124px; display: flex; flex-direction: column; gap: 8px; }
+    .place-top { display: flex; justify-content: space-between; align-items: center; }
+    .place-name { font-weight: 700; font-size: 20px; }
     .small { font-size: 12px; color: var(--muted); }
     .value { font-family: Consolas, monospace; font-size: 13px; word-break: break-all; }
     .hidden { display: none; }
-    #reader {
-      width: 100%;
-      max-width: 420px;
-      overflow: hidden;
-      border-radius: 16px;
-    }
-    .history {
-      max-height: 360px;
-      overflow: auto;
-      border: 1px solid var(--line);
-      border-radius: 14px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    th, td {
-      text-align: left;
-      padding: 10px;
-      border-bottom: 1px solid var(--line);
-      font-size: 13px;
-      vertical-align: top;
-    }
-    .notice {
-      padding: 10px 12px;
-      border-radius: 12px;
-      background: rgba(56,189,248,0.08);
-      border: 1px solid rgba(56,189,248,0.25);
-      color: #bae6fd;
-      margin-bottom: 12px;
-    }
-    .warning {
-      background: rgba(245,158,11,0.08);
-      border-color: rgba(245,158,11,0.28);
-      color: #fde68a;
-    }
-    @media (max-width: 900px) {
-      .panel.half, .panel.third { grid-column: span 12; }
-      .scan-row { grid-template-columns: 1fr; }
-    }
+    #reader { width: 100%; max-width: 420px; overflow: hidden; border-radius: 16px; }
+    .history { max-height: 360px; overflow: auto; border: 1px solid var(--line); border-radius: 14px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 10px; border-bottom: 1px solid var(--line); font-size: 13px; vertical-align: top; }
+    .notice { padding: 10px 12px; border-radius: 12px; background: rgba(56,189,248,0.08); border: 1px solid rgba(56,189,248,0.25); color: #bae6fd; margin-bottom: 12px; }
+    .footer-note { margin-top: 10px; font-size: 12px; color: var(--muted); }
+    @media (max-width: 900px) { .panel.half, .panel.third { grid-column: span 12; } .scan-row { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -185,14 +65,12 @@
     <div class="toolbar">
       <button id="tab-scan" class="primary">Scan-Station UG</button>
       <button id="tab-dashboard">Dashboard Schichtleiter</button>
-      <button id="tab-setup">Setup</button>
-      <button id="clear-demo" class="danger">Alle Stati zurücksetzen</button>
     </div>
 
     <section id="view-scan" class="grid">
       <div class="panel half">
         <h2 class="title">Scannen</h2>
-        <div class="notice">Empfohlen im Betrieb: USB-Barcode-Scanner. Smartphone-Kamera ist als Zusatzfunktion eingebaut.</div>
+        <div class="notice">Firebase ist fest im Code hinterlegt. Kein Setup pro PC nötig. Empfohlen im Betrieb: USB-Barcode-Scanner. Smartphone-Kamera ist zusätzlich eingebaut.</div>
 
         <div class="scan-row">
           <label for="scanInput">Scanner-Eingabe</label>
@@ -240,8 +118,7 @@
           <li>Platz scannen, z. B. A1.</li>
           <li>Erste Charge scannen.</li>
           <li>Zweite Charge scannen.</li>
-          <li>Bei Ungleichheit wird der Platz im Dashboard rot gesetzt.</li>
-          <li>Reset erfolgt im Dashboard durch den Schichtleiter.</li>
+          <li>Ungleich = rot, gleich = grün.</li>
         </ol>
       </div>
     </section>
@@ -249,23 +126,13 @@
     <section id="view-dashboard" class="grid hidden">
       <div class="panel third">
         <h2 class="title">Übersicht</h2>
-        <div class="status-box"><span class="lamp ok"></span> OK / zurückgesetzt</div>
-        <div class="status-box" style="margin-top:10px;"><span class="lamp error"></span> Abweichung aktiv</div>
-        <div class="status-box" style="margin-top:10px;"><span class="lamp warn"></span> Neue Meldung / nicht quittiert</div>
+        <div class="status-box"><span class="lamp ok"></span> OK</div>
+        <div class="status-box" style="margin-top:10px;"><span class="lamp error"></span> Abweichung</div>
       </div>
 
       <div class="panel third">
         <h2 class="title">Live-Zähler</h2>
-        <div>Aktive Fehler: <strong id="activeCount">0</strong></div>
-        <div style="margin-top:8px;">Neue Meldungen: <strong id="newCount">0</strong></div>
-      </div>
-
-      <div class="panel third">
-        <h2 class="title">Aktionen</h2>
-        <div class="toolbar">
-          <button id="ackAll">Alle quittieren</button>
-          <button id="resetAll">Alle resetten</button>
-        </div>
+        <div>Aktive Abweichungen: <strong id="activeCount">0</strong></div>
       </div>
 
       <div class="panel">
@@ -290,25 +157,7 @@
             <tbody id="historyBody"></tbody>
           </table>
         </div>
-      </div>
-    </section>
-
-    <section id="view-setup" class="grid hidden">
-      <div class="panel">
-        <h2 class="title">Firebase-Setup</h2>
-        <div class="warning notice">Für Phase 2 brauchst du einen gemeinsamen Online-Datenspeicher. Trage hier deine Firebase-Web-Konfiguration ein.</div>
-        <div class="scan-row"><label>apiKey</label><input id="cfg_apiKey" type="text" placeholder="..." /></div>
-        <div class="scan-row"><label>authDomain</label><input id="cfg_authDomain" type="text" placeholder="...firebaseapp.com" /></div>
-        <div class="scan-row"><label>databaseURL</label><input id="cfg_databaseURL" type="text" placeholder="https://...firebasedatabase.app" /></div>
-        <div class="scan-row"><label>projectId</label><input id="cfg_projectId" type="text" placeholder="..." /></div>
-        <div class="scan-row"><label>storageBucket</label><input id="cfg_storageBucket" type="text" placeholder="...appspot.com" /></div>
-        <div class="scan-row"><label>messagingSenderId</label><input id="cfg_messagingSenderId" type="text" placeholder="..." /></div>
-        <div class="scan-row"><label>appId</label><input id="cfg_appId" type="text" placeholder="..." /></div>
-        <div class="toolbar">
-          <button id="saveConfig" class="success">Konfiguration speichern</button>
-          <button id="loadDemo">Demo ohne Cloud testen</button>
-        </div>
-        <p class="muted">Ohne Firebase läuft die App lokal nur im aktuellen Browser. Mit Firebase synchronisieren UG und Büro live.</p>
+        <div class="footer-note">Version: fix-no-setup-v2</div>
       </div>
     </section>
   </div>
@@ -318,9 +167,7 @@
     import { getDatabase, ref, set, update, onValue, push } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js';
     import { Html5Qrcode } from 'https://esm.sh/html5-qrcode@2.3.8';
 
-    const LOCAL_DEMO_KEY = 'mb_charge_monitor_demo_data';
     const places = Array.from({ length: 30 }, (_, i) => `A${i + 1}`);
-
     const FIREBASE_CONFIG = {
       apiKey: 'AIzaSyCRKNP040IjGOqcLfta0Ca5i3k0ZNDUyK8',
       authDomain: 'chargenerfassung.firebaseapp.com',
@@ -340,7 +187,6 @@
       operator: '',
       app: null,
       db: null,
-      cloudReady: false,
       liveData: { places: {}, history: [] },
       camera: null,
     };
@@ -351,41 +197,13 @@
     function defaultData() {
       const obj = {};
       places.forEach((p) => {
-        obj[p] = {
-          place: p,
-          status: 'ok',
-          charge1: '',
-          charge2: '',
-          updatedAt: '',
-          operator: '',
-          acknowledged: true,
-        };
+        obj[p] = { place: p, status: 'ok', charge1: '', charge2: '', updatedAt: '', operator: '' };
       });
       return { places: obj, history: [] };
     }
 
-    function saveDemoData(data) {
-      localStorage.setItem(LOCAL_DEMO_KEY, JSON.stringify(data));
-    }
-
-    function loadDemoData() {
-      const raw = localStorage.getItem(LOCAL_DEMO_KEY);
-      if (!raw) {
-        const d = defaultData();
-        saveDemoData(d);
-        return d;
-      }
-      try {
-        return JSON.parse(raw);
-      } catch {
-        const d = defaultData();
-        saveDemoData(d);
-        return d;
-      }
-    }
-
     function setView(name) {
-      ['scan', 'dashboard', 'setup'].forEach((v) => el(`view-${v}`).classList.add('hidden'));
+      ['scan', 'dashboard'].forEach((v) => el(`view-${v}`).classList.add('hidden'));
       el(`view-${name}`).classList.remove('hidden');
     }
 
@@ -404,105 +222,38 @@
       el('currentPlace').textContent = state.currentPlace || '-';
       el('currentCharge1').textContent = state.charge1 || '-';
       el('currentCharge2').textContent = state.charge2 || '-';
-
-      const map = {
-        apiKey: FIREBASE_CONFIG.apiKey,
-        authDomain: FIREBASE_CONFIG.authDomain,
-        databaseURL: FIREBASE_CONFIG.databaseURL,
-        projectId: FIREBASE_CONFIG.projectId,
-        storageBucket: FIREBASE_CONFIG.storageBucket,
-        messagingSenderId: FIREBASE_CONFIG.messagingSenderId,
-        appId: FIREBASE_CONFIG.appId,
-      };
-      Object.entries(map).forEach(([key, value]) => {
-        const node = el(`cfg_${key}`);
-        if (node) node.value = value;
-      });
     }
 
     function setLastResult(kind, text) {
-      const map = { ok: 'ok', warn: 'warn', error: 'error' };
+      const map = { ok: 'ok', error: 'error' };
       el('lastResult').innerHTML = `<span class="lamp ${map[kind] || ''}"></span><span>${text}</span>`;
     }
 
     async function initFirebase() {
-      try {
-        state.app = initializeApp(FIREBASE_CONFIG, `mb-${Date.now()}`);
-        state.db = getDatabase(state.app);
-        state.cloudReady = true;
-        onValue(ref(state.db, 'materialbahnhof'), (snapshot) => {
-          const val = snapshot.val() || defaultData();
-          state.liveData = val;
-          renderAll();
-        });
-        return true;
-      } catch (err) {
-        console.error(err);
-        state.cloudReady = false;
-        setLastResult('error', 'Firebase konnte nicht initialisiert werden. Demo-Modus aktiv.');
-        state.liveData = loadDemoData();
+      state.app = initializeApp(FIREBASE_CONFIG);
+      state.db = getDatabase(state.app);
+      onValue(ref(state.db, 'materialbahnhof'), (snapshot) => {
+        const val = snapshot.val() || defaultData();
+        state.liveData = val;
         renderAll();
-        return false;
-      }
+      });
     }
 
     async function ensureBaseData() {
-      if (state.cloudReady && state.db) {
-        await set(ref(state.db, 'materialbahnhof'), state.liveData?.places ? state.liveData : defaultData());
-      } else {
-        const d = state.liveData?.places ? state.liveData : defaultData();
-        state.liveData = d;
-        saveDemoData(d);
-      }
+      const snapshotData = state.liveData?.places ? state.liveData : defaultData();
+      await set(ref(state.db, 'materialbahnhof'), snapshotData);
     }
 
     async function writeRecord(place, charge1, charge2, operator) {
       const status = charge1 === charge2 ? 'ok' : 'error';
-      const acknowledged = status === 'ok';
-      const record = {
-        place,
-        status,
-        charge1,
-        charge2,
-        updatedAt: nowStr(),
-        operator: operator || '',
-        acknowledged,
-      };
-      const historyItem = {
-        ...record,
-        id: `${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
-      };
+      const record = { place, status, charge1, charge2, updatedAt: nowStr(), operator: operator || '' };
+      const historyItem = { ...record, id: `${Date.now()}_${Math.random().toString(36).slice(2, 9)}` };
 
-      if (state.cloudReady && state.db) {
-        await update(ref(state.db, `materialbahnhof/places/${place}`), record);
-        await push(ref(state.db, 'materialbahnhof/history'), historyItem);
-      } else {
-        const d = state.liveData?.places ? state.liveData : defaultData();
-        d.places[place] = record;
-        const hist = Array.isArray(d.history) ? d.history : Object.values(d.history || {});
-        hist.unshift(historyItem);
-        d.history = hist.slice(0, 300);
-        state.liveData = d;
-        saveDemoData(d);
-        renderAll();
-      }
+      await update(ref(state.db, `materialbahnhof/places/${place}`), record);
+      await push(ref(state.db, 'materialbahnhof/history'), historyItem);
 
-      if (status === 'ok') {
-        setLastResult('ok', `Platz ${place}: Chargen stimmen überein (${charge1}).`);
-      } else {
-        setLastResult('error', `Platz ${place}: Abweichung erkannt (${charge1} ≠ ${charge2}).`);
-      }
-    }
-
-    async function setPlaceMeta(place, patch) {
-      if (state.cloudReady && state.db) {
-        await update(ref(state.db, `materialbahnhof/places/${place}`), patch);
-      } else {
-        const d = state.liveData;
-        d.places[place] = { ...d.places[place], ...patch };
-        saveDemoData(d);
-        renderAll();
-      }
+      if (status === 'ok') setLastResult('ok', `Platz ${place}: Chargen stimmen überein (${charge1}).`);
+      else setLastResult('error', `Platz ${place}: Abweichung erkannt (${charge1} ≠ ${charge2}).`);
     }
 
     function normalizeHistory(historyRaw) {
@@ -515,13 +266,11 @@
       host.innerHTML = '';
       const data = state.liveData?.places || defaultData().places;
       let active = 0;
-      let fresh = 0;
 
       places.forEach((place) => {
-        const p = data[place] || { place, status: 'ok', acknowledged: true };
+        const p = data[place] || { place, status: 'ok' };
         if (p.status === 'error') active++;
-        if (p.status === 'error' && !p.acknowledged) fresh++;
-        const lampClass = p.status === 'error' ? (p.acknowledged ? 'error' : 'warn') : 'ok';
+        const lampClass = p.status === 'error' ? 'error' : 'ok';
         const card = document.createElement('div');
         card.className = 'place-card';
         card.innerHTML = `
@@ -530,40 +279,18 @@
             <span class="lamp ${lampClass}"></span>
           </div>
           <div class="small">Status</div>
-          <div>${p.status === 'error' ? (p.acknowledged ? 'Abweichung aktiv' : 'Neu / nicht quittiert') : 'OK / reset'} </div>
+          <div>${p.status === 'error' ? 'Abweichung' : 'OK'}</div>
           <div class="small">Charge 1</div>
           <div class="value">${p.charge1 || '-'}</div>
           <div class="small">Charge 2</div>
           <div class="value">${p.charge2 || '-'}</div>
           <div class="small">Zuletzt</div>
           <div class="small">${p.updatedAt || '-'}</div>
-          <div class="toolbar" style="margin-top:auto;">
-            <button data-ack="${place}">Quittieren</button>
-            <button data-reset="${place}">Reset</button>
-          </div>
         `;
         host.appendChild(card);
       });
 
       el('activeCount').textContent = String(active);
-      el('newCount').textContent = String(fresh);
-
-      host.querySelectorAll('[data-ack]').forEach((btn) => {
-        btn.addEventListener('click', async () => {
-          await setPlaceMeta(btn.dataset.ack, { acknowledged: true });
-        });
-      });
-      host.querySelectorAll('[data-reset]').forEach((btn) => {
-        btn.addEventListener('click', async () => {
-          await setPlaceMeta(btn.dataset.reset, {
-            status: 'ok',
-            charge1: '',
-            charge2: '',
-            updatedAt: nowStr(),
-            acknowledged: true,
-          });
-        });
-      });
     }
 
     function renderHistory() {
@@ -594,7 +321,7 @@
 
       if (state.phase === 'place') {
         if (!places.includes(code)) {
-          setLastResult('warn', `Ungültiger Platzcode: ${code}. Erwartet A1 bis A30.`);
+          setLastResult('error', `Ungültiger Platzcode: ${code}. Erwartet A1 bis A30.`);
           return;
         }
         state.currentPlace = code;
@@ -624,14 +351,12 @@
         await state.camera.start(
           { facingMode: 'environment' },
           { fps: 8, qrbox: { width: 280, height: 140 } },
-          async (decodedText) => {
-            await processCode(decodedText);
-          },
+          async (decodedText) => { await processCode(decodedText); },
           () => {}
         );
       } catch (err) {
         console.error(err);
-        setLastResult('warn', 'Kamera konnte nicht gestartet werden. Bitte Browserberechtigung prüfen.');
+        setLastResult('error', 'Kamera konnte nicht gestartet werden. Bitte Browserberechtigung prüfen.');
       }
     }
 
@@ -647,21 +372,8 @@
       }
     }
 
-    async function fullReset() {
-      const d = defaultData();
-      state.liveData = d;
-      if (state.cloudReady && state.db) {
-        await set(ref(state.db, 'materialbahnhof'), d);
-      } else {
-        saveDemoData(d);
-      }
-      renderAll();
-      setLastResult('ok', 'Alle Stati wurden zurückgesetzt.');
-    }
-
     el('tab-scan').addEventListener('click', () => setView('scan'));
     el('tab-dashboard').addEventListener('click', () => setView('dashboard'));
-    el('tab-setup').addEventListener('click', () => setView('setup'));
     el('manualSubmit').addEventListener('click', async () => {
       await processCode(el('scanInput').value);
       el('scanInput').value = '';
@@ -676,24 +388,6 @@
     el('resetFlow').addEventListener('click', resetFlow);
     el('startCamera').addEventListener('click', startCamera);
     el('stopCamera').addEventListener('click', stopCamera);
-    el('clear-demo').addEventListener('click', fullReset);
-    el('resetAll').addEventListener('click', fullReset);
-    el('ackAll').addEventListener('click', async () => {
-      for (const place of places) {
-        await setPlaceMeta(place, { acknowledged: true });
-      }
-    });
-    el('saveConfig').addEventListener('click', async () => {
-      await initFirebase();
-      await ensureBaseData();
-      setLastResult('ok', 'Cloud-Verbindung wurde neu initialisiert.');
-    });
-    el('loadDemo').addEventListener('click', async () => {
-      state.cloudReady = false;
-      state.liveData = loadDemoData();
-      renderAll();
-      setLastResult('ok', 'Demo-Modus ohne Cloud aktiv.');
-    });
 
     renderAll();
     resetFlow();
