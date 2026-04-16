@@ -130,6 +130,7 @@
           <li>Wenn gescannte Charge = Soll-Charge → grün.</li>
           <li>Wenn gescannte Charge ≠ Soll-Charge → rot.</li>
           <li>Jeder Platz kann einzeln zurückgesetzt werden.</li>
+          <li>Bei Kamerascanning wird nach einem gültigen Treffer kurz gesperrt, damit nichts springt.</li>
         </ol>
       </div>
     </section>
@@ -168,7 +169,7 @@
             <tbody id="historyBody"></tbody>
           </table>
         </div>
-        <div class="footer-note">Version: production-places-v4</div>
+        <div class="footer-note">Version: production-places-v5-camera-lock</div>
       </div>
     </section>
   </div>
@@ -206,10 +207,15 @@
       liveData: { places: {}, history: [] },
       camera: null,
       initialized: false,
+      isCameraRunning: false,
+      cameraLocked: false,
+      lastCameraCode: '',
+      lastCameraTs: 0,
     };
 
     const el = (id) => document.getElementById(id);
     const nowStr = () => new Date().toLocaleString('de-CH');
+    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
     function defaultData() {
       const obj = {};
@@ -428,7 +434,18 @@
       el('scanInput').focus();
     }
 
-    async function processCode(raw) {
+    async function withCameraLock(fn) {
+      if (state.cameraLocked) return;
+      state.cameraLocked = true;
+      try {
+        await fn();
+      } finally {
+        await sleep(1200);
+        state.cameraLocked = false;
+      }
+    }
+
+    async function processCode(raw, source = 'manual') {
       const code = String(raw || '').trim();
       if (!code) return;
       state.operator = el('operator').value.trim();
@@ -438,20 +455,46 @@
         return;
       }
 
+      if (source === 'camera') {
+        const now = Date.now();
+        if (state.cameraLocked) return;
+        if (state.lastCameraCode === code && now - state.lastCameraTs < 1500) return;
+        state.lastCameraCode = code;
+        state.lastCameraTs = now;
+      }
+
       if (state.phase === 'place') {
         if (!places.includes(code)) {
-          setLastResult('error', `Ungültiger Platzcode: ${code}. Bitte Platz scannen oder manuell wählen.`);
+          if (source !== 'camera') {
+            setLastResult('error', `Ungültiger Platzcode: ${code}. Bitte Platz scannen oder manuell wählen.`);
+          }
           return;
         }
-        setSelectedPlace(code);
+        if (source === 'camera') {
+          await withCameraLock(async () => {
+            setSelectedPlace(code);
+            setLastResult('ok', `Platz ${code} per Kamera erkannt. Jetzt Charge scannen.`);
+          });
+        } else {
+          setSelectedPlace(code);
+        }
         return;
       }
 
       if (state.phase === 'charge') {
-        state.scannedCharge = code;
-        renderFlow();
-        await writeScan(state.currentPlace, state.scannedCharge, state.operator);
-        resetFlow();
+        if (source === 'camera') {
+          await withCameraLock(async () => {
+            state.scannedCharge = code;
+            renderFlow();
+            await writeScan(state.currentPlace, state.scannedCharge, state.operator);
+            resetFlow();
+          });
+        } else {
+          state.scannedCharge = code;
+          renderFlow();
+          await writeScan(state.currentPlace, state.scannedCharge, state.operator);
+          resetFlow();
+        }
       }
     }
 
@@ -462,9 +505,11 @@
         await state.camera.start(
           { facingMode: 'environment' },
           { fps: 8, qrbox: { width: 280, height: 140 } },
-          async (decodedText) => { await processCode(decodedText); },
+          async (decodedText) => { await processCode(decodedText, 'camera'); },
           () => {}
         );
+        state.isCameraRunning = true;
+        setLastResult('ok', 'Kamera gestartet. Gültige Treffer werden kurz gesperrt, damit nichts springt.');
       } catch (err) {
         console.error(err);
         setLastResult('error', 'Kamera konnte nicht gestartet werden. Bitte Browserberechtigung prüfen.');
@@ -473,9 +518,10 @@
 
     async function stopCamera() {
       try {
-        if (state.camera && state.camera.isScanning) {
+        if (state.camera && state.isCameraRunning) {
           await state.camera.stop();
           await state.camera.clear();
+          state.isCameraRunning = false;
         }
         el('reader').classList.add('hidden');
       } catch (err) {
@@ -486,13 +532,13 @@
     el('tab-scan').addEventListener('click', () => setView('scan'));
     el('tab-dashboard').addEventListener('click', () => setView('dashboard'));
     el('manualSubmit').addEventListener('click', async () => {
-      await processCode(el('scanInput').value);
+      await processCode(el('scanInput').value, 'manual');
       el('scanInput').value = '';
       el('scanInput').focus();
     });
     el('scanInput').addEventListener('keydown', async (e) => {
       if (e.key === 'Enter') {
-        await processCode(el('scanInput').value);
+        await processCode(el('scanInput').value, 'manual');
         el('scanInput').value = '';
       }
     });
