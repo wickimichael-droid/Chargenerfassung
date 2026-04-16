@@ -149,6 +149,11 @@
 
       <div class="panel">
         <h2 class="title">Plätze</h2>
+        <div class="toolbar">
+          <button id="tab-all">Alle</button>
+          <button id="tab-dryer">Trockner</button>
+          <button id="tab-silo">Silos</button>
+        </div>
         <div id="places" class="places"></div>
       </div>
 
@@ -169,7 +174,7 @@
             <tbody id="historyBody"></tbody>
           </table>
         </div>
-        <div class="footer-note">Version: production-places-v5-camera-lock</div>
+        <div class="footer-note">Version: production-places-v6-silo</div>
       </div>
     </section>
   </div>
@@ -182,6 +187,7 @@
     const places = [
       ...Array.from({ length: 15 }, (_, i) => String(101 + i)),
       ...Array.from({ length: 15 }, (_, i) => String(121 + i)),
+      ...Array.from({ length: 18 }, (_, i) => `Silo ${i + 1}`),
       'Motan 1', 'Motan 2', 'Motan 3',
       'Moretto 1', 'Moretto 2', 'Moretto 3', 'Moretto 4', 'Moretto 5'
     ];
@@ -359,13 +365,20 @@
       return Object.values(historyRaw || {}).sort((a, b) => (b.id || '').localeCompare(a.id || ''));
     }
 
+    let currentFilter = 'all';
+
     function renderPlaces() {
       const host = el('places');
       host.innerHTML = '';
       const data = state.liveData?.places || defaultData().places;
       let active = 0;
 
-      places.forEach((place) => {
+      places.filter((place)=>{
+        if(currentFilter==='all') return true;
+        if(currentFilter==='silo') return place.startsWith('Silo');
+        if(currentFilter==='dryer') return place.startsWith('Motan') || place.startsWith('Moretto');
+        return true;
+      }).forEach((place) => {
         const p = data[place] || { place, status: 'ok', expectedCharge: '', actualCharge: '' };
         if (p.status === 'error') active++;
         const lampClass = p.status === 'error' ? 'error' : 'ok';
@@ -398,6 +411,17 @@
       });
 
       el('activeCount').textContent = String(active);
+    }
+
+    document.addEventListener('DOMContentLoaded', ()=>{
+      const allBtn = document.getElementById('tab-all');
+      const dryerBtn = document.getElementById('tab-dryer');
+      const siloBtn = document.getElementById('tab-silo');
+
+      if(allBtn) allBtn.onclick = ()=>{currentFilter='all'; renderPlaces();};
+      if(dryerBtn) dryerBtn.onclick = ()=>{currentFilter='dryer'; renderPlaces();};
+      if(siloBtn) siloBtn.onclick = ()=>{currentFilter='silo'; renderPlaces();};
+    });
     }
 
     function renderHistory() {
