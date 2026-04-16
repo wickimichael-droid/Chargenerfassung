@@ -15,46 +15,192 @@
       --accent: #38bdf8;
     }
     * { box-sizing: border-box; }
-    body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: linear-gradient(180deg, #020617, var(--bg)); color: var(--text); }
-    header { padding: 18px 20px; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: rgba(2, 6, 23, 0.96); backdrop-filter: blur(8px); z-index: 20; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #020617, var(--bg));
+      color: var(--text);
+    }
+    header {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      background: rgba(2, 6, 23, 0.96);
+      backdrop-filter: blur(8px);
+      z-index: 20;
+    }
     h1 { margin: 0 0 6px; font-size: 24px; }
     .sub { color: var(--muted); font-size: 14px; }
     .wrap { max-width: 1450px; margin: 0 auto; padding: 20px; }
-    .toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin: 14px 0 20px; }
-    button, input, select { border-radius: 10px; border: 1px solid var(--line); background: #0b1220; color: var(--text); padding: 10px 12px; font-size: 14px; }
-    button { cursor: pointer; background: #111827; }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 14px 0 20px;
+    }
+    button, input, select {
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #0b1220;
+      color: var(--text);
+      padding: 10px 12px;
+      font-size: 14px;
+    }
+    button {
+      cursor: pointer;
+      background: #111827;
+    }
     button:hover { border-color: var(--accent); }
     .primary { background: #0c4a6e; }
     .success { background: #14532d; }
     .danger { background: #7f1d1d; }
-    .grid { display: grid; gap: 16px; grid-template-columns: repeat(12, 1fr); }
-    .panel { grid-column: span 12; background: rgba(17, 24, 39, 0.9); border: 1px solid var(--line); border-radius: 18px; padding: 16px; box-shadow: 0 12px 30px rgba(0,0,0,0.25); }
+
+    .grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(12, 1fr);
+    }
+    .panel {
+      grid-column: span 12;
+      background: rgba(17, 24, 39, 0.9);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+    }
     .panel.half { grid-column: span 6; }
     .panel.third { grid-column: span 4; }
+
     .title { margin: 0 0 12px; font-size: 18px; }
     .muted { color: var(--muted); }
-    .scan-row { display: grid; grid-template-columns: 180px 1fr; gap: 10px; align-items: center; margin-bottom: 10px; }
-    .status-box { display: inline-flex; align-items: center; gap: 10px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: #0b1220; flex-wrap: wrap; }
-    .lamp { width: 18px; height: 18px; border-radius: 50%; background: #475569; box-shadow: 0 0 0 2px rgba(255,255,255,0.05) inset; display: inline-block; }
-    .lamp.ok { background: var(--ok); box-shadow: 0 0 18px rgba(34,197,94,0.65); }
-    .lamp.error { background: var(--error); box-shadow: 0 0 20px rgba(239,68,68,0.75); }
-    .places { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
-    .place-card { border: 1px solid var(--line); border-radius: 16px; padding: 12px; background: #0b1220; min-height: 210px; display: flex; flex-direction: column; gap: 8px; }
-    .place-top { display: flex; justify-content: space-between; align-items: center; }
-    .place-name { font-weight: 700; font-size: 20px; }
+
+    .scan-row {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .status-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #0b1220;
+      flex-wrap: wrap;
+    }
+
+    .lamp {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #475569;
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.05) inset;
+      display: inline-block;
+    }
+    .lamp.ok {
+      background: var(--ok);
+      box-shadow: 0 0 18px rgba(34,197,94,0.65);
+    }
+    .lamp.error {
+      background: var(--error);
+      box-shadow: 0 0 20px rgba(239,68,68,0.75);
+    }
+
+    .places {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 12px;
+    }
+
+    .place-card {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px;
+      background: #0b1220;
+      min-height: 210px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .place-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .place-name {
+      font-weight: 700;
+      font-size: 20px;
+    }
+
     .small { font-size: 12px; color: var(--muted); }
-    .value { font-family: Consolas, monospace; font-size: 13px; word-break: break-all; }
+    .value {
+      font-family: Consolas, monospace;
+      font-size: 13px;
+      word-break: break-all;
+    }
+
     .hidden { display: none; }
-    #reader { width: 100%; max-width: 420px; overflow: hidden; border-radius: 16px; }
-    .history { max-height: 360px; overflow: auto; border: 1px solid var(--line); border-radius: 14px; }
-    table { width: 100%; border-collapse: collapse; }
-    th, td { text-align: left; padding: 10px; border-bottom: 1px solid var(--line); font-size: 13px; vertical-align: top; }
-    .notice { padding: 10px 12px; border-radius: 12px; background: rgba(56,189,248,0.08); border: 1px solid rgba(56,189,248,0.25); color: #bae6fd; margin-bottom: 12px; }
-    .footer-note { margin-top: 10px; font-size: 12px; color: var(--muted); }
+    #reader {
+      width: 100%;
+      max-width: 420px;
+      overflow: hidden;
+      border-radius: 16px;
+    }
+
+    .history {
+      max-height: 360px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      text-align: left;
+      padding: 10px;
+      border-bottom: 1px solid var(--line);
+      font-size: 13px;
+      vertical-align: top;
+    }
+
+    .notice {
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(56,189,248,0.08);
+      border: 1px solid rgba(56,189,248,0.25);
+      color: #bae6fd;
+      margin-bottom: 12px;
+    }
+
+    .footer-note {
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
     .warning-text { color: #fecaca; }
-    .inline-fields { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    .inline-fields {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
     .inline-fields > * { flex: 1 1 220px; }
-    @media (max-width: 900px) { .panel.half, .panel.third { grid-column: span 12; } .scan-row { grid-template-columns: 1fr; } }
+
+    @media (max-width: 900px) {
+      .panel.half, .panel.third { grid-column: span 12; }
+      .scan-row { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -72,7 +218,11 @@
     <section id="view-scan" class="grid">
       <div class="panel half">
         <h2 class="title">Scannen</h2>
-        <div class="notice">Ablauf: Platz scannen oder manuell auswählen, danach Charge scannen. Die App vergleicht die Charge mit der hinterlegten Soll-Charge des Platzes. Wenn für einen Platz noch keine Soll-Charge vorhanden ist, wird die erste gescannte Charge automatisch als Soll-Charge gespeichert.</div>
+        <div class="notice">
+          Ablauf: Platz scannen oder manuell auswählen, danach Charge scannen.
+          Die App vergleicht die Charge mit der hinterlegten Soll-Charge des Platzes.
+          Wenn für einen Platz noch keine Soll-Charge vorhanden ist, wird die erste gescannte Charge automatisch als Soll-Charge gespeichert.
+        </div>
 
         <div class="scan-row">
           <label for="placeSelect">Platz manuell wählen</label>
@@ -150,9 +300,10 @@
       <div class="panel">
         <h2 class="title">Plätze</h2>
         <div class="toolbar">
-          <button id="tab-all">Alle</button>
-          <button id="tab-dryer">Trockner</button>
-          <button id="tab-silo">Silos</button>
+          <button id="filter-all">Alle</button>
+          <button id="filter-numbers">Nummern</button>
+          <button id="filter-dryers">Alles mit Trockner</button>
+          <button id="filter-silos">Silos</button>
         </div>
         <div id="places" class="places"></div>
       </div>
@@ -174,7 +325,7 @@
             <tbody id="historyBody"></tbody>
           </table>
         </div>
-        <div class="footer-note">Version: production-places-v6-silo</div>
+        <div class="footer-note">Version: production-places-v7-dashboard-fix</div>
       </div>
     </section>
   </div>
@@ -217,11 +368,37 @@
       cameraLocked: false,
       lastCameraCode: '',
       lastCameraTs: 0,
+      dashboardFilter: 'all',
     };
 
     const el = (id) => document.getElementById(id);
     const nowStr = () => new Date().toLocaleString('de-CH');
     const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+    function isDryerPlace(place) {
+      return place.startsWith('Motan') || place.startsWith('Moretto');
+    }
+
+    function isSiloPlace(place) {
+      return place.startsWith('Silo ');
+    }
+
+    function isNumberPlace(place) {
+      return !isDryerPlace(place) && !isSiloPlace(place);
+    }
+
+    function getFilteredPlaces() {
+      if (state.dashboardFilter === 'numbers') {
+        return places.filter(isNumberPlace);
+      }
+      if (state.dashboardFilter === 'dryers') {
+        return places.filter(isDryerPlace);
+      }
+      if (state.dashboardFilter === 'silos') {
+        return places.filter(isSiloPlace);
+      }
+      return places;
+    }
 
     function defaultData() {
       const obj = {};
@@ -240,7 +417,9 @@
 
     function fillPlaceSelect() {
       const select = el('placeSelect');
-      select.innerHTML = '<option value="">Bitte Platz wählen</option>' + places.map((p) => `<option value="${p}">${p}</option>`).join('');
+      select.innerHTML =
+        '<option value="">Bitte Platz wählen</option>' +
+        places.map((p) => `<option value="${p}">${p}</option>`).join('');
     }
 
     function setView(name) {
@@ -275,6 +454,7 @@
 
       const rootRef = ref(state.db, 'materialbahnhof');
       const snapshot = await get(rootRef);
+
       if (!snapshot.exists()) {
         await set(rootRef, defaultData());
       } else {
@@ -365,23 +545,18 @@
       return Object.values(historyRaw || {}).sort((a, b) => (b.id || '').localeCompare(a.id || ''));
     }
 
-    let currentFilter = 'all';
-
     function renderPlaces() {
       const host = el('places');
       host.innerHTML = '';
       const data = state.liveData?.places || defaultData().places;
       let active = 0;
 
-      places.filter((place)=>{
-        if(currentFilter==='all') return true;
-        if(currentFilter==='silo') return place.startsWith('Silo');
-        if(currentFilter==='dryer') return place.startsWith('Motan') || place.startsWith('Moretto');
-        return true;
-      }).forEach((place) => {
+      getFilteredPlaces().forEach((place) => {
         const p = data[place] || { place, status: 'ok', expectedCharge: '', actualCharge: '' };
         if (p.status === 'error') active++;
+
         const lampClass = p.status === 'error' ? 'error' : 'ok';
+
         const card = document.createElement('div');
         card.className = 'place-card';
         card.innerHTML = `
@@ -413,20 +588,10 @@
       el('activeCount').textContent = String(active);
     }
 
-    document.addEventListener('DOMContentLoaded', ()=>{
-      const allBtn = document.getElementById('tab-all');
-      const dryerBtn = document.getElementById('tab-dryer');
-      const siloBtn = document.getElementById('tab-silo');
-
-      if(allBtn) allBtn.onclick = ()=>{currentFilter='all'; renderPlaces();};
-      if(dryerBtn) dryerBtn.onclick = ()=>{currentFilter='dryer'; renderPlaces();};
-      if(siloBtn) siloBtn.onclick = ()=>{currentFilter='silo'; renderPlaces();};
-    });
-    }
-
     function renderHistory() {
       const body = el('historyBody');
       const history = normalizeHistory(state.liveData?.history).slice(0, 200);
+
       body.innerHTML = history.map((item) => `
         <tr>
           <td>${item.updatedAt || '-'}</td>
@@ -450,6 +615,7 @@
         setLastResult('error', `Ungültiger Platz: ${place}.`);
         return;
       }
+
       state.currentPlace = place;
       state.phase = 'charge';
       el('placeSelect').value = place;
@@ -472,6 +638,7 @@
     async function processCode(raw, source = 'manual') {
       const code = String(raw || '').trim();
       if (!code) return;
+
       state.operator = el('operator').value.trim();
 
       if (!state.initialized) {
@@ -494,6 +661,7 @@
           }
           return;
         }
+
         if (source === 'camera') {
           await withCameraLock(async () => {
             setSelectedPlace(code);
@@ -526,12 +694,14 @@
       try {
         el('reader').classList.remove('hidden');
         if (!state.camera) state.camera = new Html5Qrcode('reader');
+
         await state.camera.start(
           { facingMode: 'environment' },
           { fps: 8, qrbox: { width: 280, height: 140 } },
           async (decodedText) => { await processCode(decodedText, 'camera'); },
           () => {}
         );
+
         state.isCameraRunning = true;
         setLastResult('ok', 'Kamera gestartet. Gültige Treffer werden kurz gesperrt, damit nichts springt.');
       } catch (err) {
@@ -553,38 +723,79 @@
       }
     }
 
-    el('tab-scan').addEventListener('click', () => setView('scan'));
-    el('tab-dashboard').addEventListener('click', () => setView('dashboard'));
-    el('manualSubmit').addEventListener('click', async () => {
-      await processCode(el('scanInput').value, 'manual');
-      el('scanInput').value = '';
-      el('scanInput').focus();
-    });
-    el('scanInput').addEventListener('keydown', async (e) => {
-      if (e.key === 'Enter') {
+    function bindEvents() {
+      el('tab-scan').addEventListener('click', () => setView('scan'));
+      el('tab-dashboard').addEventListener('click', () => setView('dashboard'));
+
+      el('manualSubmit').addEventListener('click', async () => {
         await processCode(el('scanInput').value, 'manual');
         el('scanInput').value = '';
-      }
-    });
-    el('resetFlow').addEventListener('click', resetFlow);
-    el('startCamera').addEventListener('click', startCamera);
-    el('stopCamera').addEventListener('click', stopCamera);
-    el('useSelectedPlace').addEventListener('click', () => {
-      const selected = el('placeSelect').value;
-      if (!selected) {
-        setLastResult('error', 'Bitte zuerst einen Platz auswählen.');
-        return;
-      }
-      setSelectedPlace(selected);
-    });
-    el('placeSelect').addEventListener('change', () => {
-      const selected = el('placeSelect').value;
-      if (selected && state.phase === 'place') {
+        el('scanInput').focus();
+      });
+
+      el('scanInput').addEventListener('keydown', async (e) => {
+        if (e.key === 'Enter') {
+          await processCode(el('scanInput').value, 'manual');
+          el('scanInput').value = '';
+        }
+      });
+
+      el('resetFlow').addEventListener('click', resetFlow);
+      el('startCamera').addEventListener('click', startCamera);
+      el('stopCamera').addEventListener('click', stopCamera);
+
+      el('useSelectedPlace').addEventListener('click', () => {
+        const selected = el('placeSelect').value;
+        if (!selected) {
+          setLastResult('error', 'Bitte zuerst einen Platz auswählen.');
+          return;
+        }
         setSelectedPlace(selected);
+      });
+
+      el('placeSelect').addEventListener('change', () => {
+        const selected = el('placeSelect').value;
+        if (selected && state.phase === 'place') {
+          setSelectedPlace(selected);
+        }
+      });
+
+      const allBtn = el('filter-all');
+      const numbersBtn = el('filter-numbers');
+      const dryersBtn = el('filter-dryers');
+      const silosBtn = el('filter-silos');
+
+      if (allBtn) {
+        allBtn.addEventListener('click', () => {
+          state.dashboardFilter = 'all';
+          renderPlaces();
+        });
       }
-    });
+
+      if (numbersBtn) {
+        numbersBtn.addEventListener('click', () => {
+          state.dashboardFilter = 'numbers';
+          renderPlaces();
+        });
+      }
+
+      if (dryersBtn) {
+        dryersBtn.addEventListener('click', () => {
+          state.dashboardFilter = 'dryers';
+          renderPlaces();
+        });
+      }
+
+      if (silosBtn) {
+        silosBtn.addEventListener('click', () => {
+          state.dashboardFilter = 'silos';
+          renderPlaces();
+        });
+      }
+    }
 
     fillPlaceSelect();
+    bindEvents();
     renderAll();
     resetFlow();
     initFirebase();
