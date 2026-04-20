@@ -14,13 +14,16 @@
       --line: #334155;
       --accent: #38bdf8;
     }
+
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
       background: linear-gradient(180deg, #020617, var(--bg));
       color: var(--text);
     }
+
     header {
       padding: 18px 20px;
       border-bottom: 1px solid var(--line);
@@ -30,15 +33,23 @@
       backdrop-filter: blur(8px);
       z-index: 20;
     }
+
     h1 { margin: 0 0 6px; font-size: 24px; }
     .sub { color: var(--muted); font-size: 14px; }
-    .wrap { max-width: 1450px; margin: 0 auto; padding: 20px; }
+
+    .wrap {
+      max-width: 1450px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
     .toolbar {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
       margin: 14px 0 20px;
     }
+
     button, input, select {
       border-radius: 10px;
       border: 1px solid var(--line);
@@ -47,11 +58,14 @@
       padding: 10px 12px;
       font-size: 14px;
     }
+
     button {
       cursor: pointer;
       background: #111827;
     }
+
     button:hover { border-color: var(--accent); }
+
     .primary { background: #0c4a6e; }
     .success { background: #14532d; }
     .danger { background: #7f1d1d; }
@@ -61,6 +75,7 @@
       gap: 16px;
       grid-template-columns: repeat(12, 1fr);
     }
+
     .panel {
       grid-column: span 12;
       background: rgba(17, 24, 39, 0.9);
@@ -69,6 +84,7 @@
       padding: 16px;
       box-shadow: 0 12px 30px rgba(0,0,0,0.25);
     }
+
     .panel.half { grid-column: span 6; }
     .panel.third { grid-column: span 4; }
 
@@ -102,10 +118,12 @@
       box-shadow: 0 0 0 2px rgba(255,255,255,0.05) inset;
       display: inline-block;
     }
+
     .lamp.ok {
       background: var(--ok);
       box-shadow: 0 0 18px rgba(34,197,94,0.65);
     }
+
     .lamp.error {
       background: var(--error);
       box-shadow: 0 0 20px rgba(239,68,68,0.75);
@@ -140,6 +158,7 @@
     }
 
     .small { font-size: 12px; color: var(--muted); }
+
     .value {
       font-family: Consolas, monospace;
       font-size: 13px;
@@ -147,6 +166,7 @@
     }
 
     .hidden { display: none; }
+
     #reader {
       width: 100%;
       max-width: 420px;
@@ -165,6 +185,7 @@
       width: 100%;
       border-collapse: collapse;
     }
+
     th, td {
       text-align: left;
       padding: 10px;
@@ -195,11 +216,49 @@
       gap: 10px;
       flex-wrap: wrap;
     }
+
     .inline-fields > * { flex: 1 1 220px; }
+
+    .overview-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      padding: 20px 0;
+    }
+
+    .overview-lamp {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: #475569;
+      box-shadow: 0 0 30px rgba(255,255,255,0.08) inset;
+      transition: all 0.2s ease;
+    }
+
+    .overview-text {
+      font-size: 28px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .overview-error-card {
+      border: 1px solid var(--error);
+      border-radius: 16px;
+      padding: 14px;
+      background: rgba(127, 29, 29, 0.25);
+    }
 
     @media (max-width: 900px) {
       .panel.half, .panel.third { grid-column: span 12; }
       .scan-row { grid-template-columns: 1fr; }
+      .overview-lamp {
+        width: 140px;
+        height: 140px;
+      }
+      .overview-text {
+        font-size: 22px;
+      }
     }
   </style>
 </head>
@@ -213,6 +272,7 @@
     <div class="toolbar">
       <button id="tab-scan" class="primary">Scan-Station UG</button>
       <button id="tab-dashboard">Dashboard Schichtleiter</button>
+      <button id="tab-overview">Übersicht</button>
     </div>
 
     <section id="view-scan" class="grid">
@@ -285,6 +345,20 @@
       </div>
     </section>
 
+    <section id="view-overview" class="grid hidden">
+      <div class="panel">
+        <h2 class="title">Gesamtübersicht</h2>
+
+        <div class="overview-wrap">
+          <div id="overviewLamp" class="overview-lamp"></div>
+          <div id="overviewText" class="overview-text">Noch keine Daten</div>
+        </div>
+
+        <h3 class="title">Aktive Abweichungen</h3>
+        <div id="overviewErrors" class="places"></div>
+      </div>
+    </section>
+
     <section id="view-dashboard" class="grid hidden">
       <div class="panel third">
         <h2 class="title">Übersicht</h2>
@@ -325,7 +399,7 @@
             <tbody id="historyBody"></tbody>
           </table>
         </div>
-        <div class="footer-note">Version: production-places-v7-dashboard-fix</div>
+        <div class="footer-note">Version: production-places-v8-overview</div>
       </div>
     </section>
   </div>
@@ -423,8 +497,13 @@
     }
 
     function setView(name) {
-      ['scan', 'dashboard'].forEach((v) => el(`view-${v}`).classList.add('hidden'));
-      el(`view-${name}`).classList.remove('hidden');
+      ['scan', 'dashboard', 'overview'].forEach((v) => {
+        const node = el(`view-${v}`);
+        if (node) node.classList.add('hidden');
+      });
+
+      const target = el(`view-${name}`);
+      if (target) target.classList.remove('hidden');
     }
 
     function resetFlow() {
@@ -604,10 +683,56 @@
       `).join('');
     }
 
+    function renderOverview() {
+      const data = state.liveData?.places || {};
+      const errorPlaces = places
+        .map((place) => data[place] || null)
+        .filter((p) => p && p.status === 'error');
+
+      const lamp = el('overviewLamp');
+      const text = el('overviewText');
+      const host = el('overviewErrors');
+
+      if (!lamp || !text || !host) return;
+
+      if (errorPlaces.length > 0) {
+        lamp.style.background = 'var(--error)';
+        lamp.style.boxShadow = '0 0 60px rgba(239,68,68,0.8)';
+        text.textContent = `ABWEICHUNG (${errorPlaces.length})`;
+      } else {
+        lamp.style.background = 'var(--ok)';
+        lamp.style.boxShadow = '0 0 60px rgba(34,197,94,0.8)';
+        text.textContent = 'ALLE PLÄTZE OK';
+      }
+
+      host.innerHTML = '';
+
+      if (errorPlaces.length === 0) {
+        host.innerHTML = '<div class="small">Aktuell keine Abweichungen vorhanden.</div>';
+        return;
+      }
+
+      errorPlaces.forEach((p) => {
+        const card = document.createElement('div');
+        card.className = 'overview-error-card';
+        card.innerHTML = `
+          <div class="place-name">${p.place}</div>
+          <div class="small">Soll-Charge</div>
+          <div class="value">${p.expectedCharge || '-'}</div>
+          <div class="small">Ist-Charge</div>
+          <div class="value warning-text">${p.actualCharge || '-'}</div>
+          <div class="small">Zuletzt</div>
+          <div class="small">${p.updatedAt || '-'}</div>
+        `;
+        host.appendChild(card);
+      });
+    }
+
     function renderAll() {
       renderFlow();
       renderPlaces();
       renderHistory();
+      renderOverview();
     }
 
     function setSelectedPlace(place) {
@@ -726,6 +851,7 @@
     function bindEvents() {
       el('tab-scan').addEventListener('click', () => setView('scan'));
       el('tab-dashboard').addEventListener('click', () => setView('dashboard'));
+      el('tab-overview').addEventListener('click', () => setView('overview'));
 
       el('manualSubmit').addEventListener('click', async () => {
         await processCode(el('scanInput').value, 'manual');
