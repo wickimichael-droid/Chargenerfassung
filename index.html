@@ -38,7 +38,7 @@
     .sub { color: var(--muted); font-size: 14px; }
 
     .wrap {
-      max-width: 1450px;
+      max-width: 1500px;
       margin: 0 auto;
       padding: 20px;
     }
@@ -131,7 +131,7 @@
 
     .places {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 12px;
     }
 
@@ -140,7 +140,7 @@
       border-radius: 16px;
       padding: 12px;
       background: #0b1220;
-      min-height: 210px;
+      min-height: 250px;
       display: flex;
       flex-direction: column;
       gap: 8px;
@@ -167,15 +167,8 @@
 
     .hidden { display: none; }
 
-    #reader {
-      width: 100%;
-      max-width: 420px;
-      overflow: hidden;
-      border-radius: 16px;
-    }
-
     .history {
-      max-height: 360px;
+      max-height: 420px;
       overflow: auto;
       border: 1px solid var(--line);
       border-radius: 14px;
@@ -265,23 +258,23 @@
 <body>
   <header>
     <h1>Materialbahnhof Chargenmonitor</h1>
-    <div class="sub">UG scannt Platz + Charge. Das System vergleicht mit der in der Datenbank hinterlegten Soll-Charge.</div>
+    <div class="sub">Chargenerfassung, Materialwechsel und Übersicht für den Materialbahnhof.</div>
   </header>
 
   <div class="wrap">
     <div class="toolbar">
-      <button id="tab-scan" class="primary">Scan-Station UG</button>
+      <button id="tab-scan" class="primary">Chargenerfassung</button>
+      <button id="tab-material">Materialwechsel</button>
       <button id="tab-dashboard">Dashboard Schichtleiter</button>
       <button id="tab-overview">Übersicht</button>
     </div>
 
     <section id="view-scan" class="grid">
       <div class="panel half">
-        <h2 class="title">Scannen</h2>
+        <h2 class="title">Chargenerfassung</h2>
         <div class="notice">
           Ablauf: Platz scannen oder manuell auswählen, danach Charge scannen.
           Die App vergleicht die Charge mit der hinterlegten Soll-Charge des Platzes.
-          Wenn für einen Platz noch keine Soll-Charge vorhanden ist, wird die erste gescannte Charge automatisch als Soll-Charge gespeichert.
         </div>
 
         <div class="scan-row">
@@ -295,11 +288,6 @@
         <div class="scan-row">
           <label for="scanInput">Scanner-Eingabe</label>
           <input id="scanInput" type="text" placeholder="Platz oder Charge scannen und Enter drücken" autofocus />
-        </div>
-
-        <div class="scan-row">
-          <label for="operator">Mitarbeiter</label>
-          <input id="operator" type="text" placeholder="z. B. Kürzel" />
         </div>
 
         <div class="scan-row">
@@ -317,12 +305,8 @@
 
         <div class="toolbar">
           <button id="manualSubmit" class="success">Code übernehmen</button>
-          <button id="resetFlow">Scanfolge zurücksetzen</button>
-          <button id="startCamera">Kamera starten</button>
-          <button id="stopCamera">Kamera stoppen</button>
+          <button id="resetFlow">Eingabe zurücksetzen</button>
         </div>
-
-        <div id="reader" class="hidden"></div>
       </div>
 
       <div class="panel half">
@@ -336,12 +320,51 @@
         <ol class="muted">
           <li>Platz scannen oder manuell wählen.</li>
           <li>Charge scannen.</li>
-          <li>Wenn keine Soll-Charge vorhanden ist, wird diese erstmalig gesetzt.</li>
           <li>Wenn gescannte Charge = Soll-Charge → grün.</li>
           <li>Wenn gescannte Charge ≠ Soll-Charge → rot.</li>
-          <li>Jeder Platz kann einzeln zurückgesetzt werden.</li>
-          <li>Bei Kamerascanning wird nach einem gültigen Treffer kurz gesperrt, damit nichts springt.</li>
+          <li>Reset setzt nur den Status zurück, nicht die Soll-Charge.</li>
         </ol>
+      </div>
+    </section>
+
+    <section id="view-material" class="grid hidden">
+      <div class="panel half">
+        <h2 class="title">Materialwechsel</h2>
+        <div class="notice">
+          Diese Seite ist für den Schichtleiter gedacht. Hier wird bei Materialwechsel die Materialnummer und die erste Charge eines Platzes gesetzt.
+        </div>
+
+        <div class="scan-row">
+          <label for="materialPlaceSelect">Platz</label>
+          <select id="materialPlaceSelect"></select>
+        </div>
+
+        <div class="scan-row">
+          <label for="materialNumberInput">Materialnummer</label>
+          <input id="materialNumberInput" type="text" placeholder="Materialnummer eingeben oder scannen" />
+        </div>
+
+        <div class="scan-row">
+          <label for="firstChargeInput">Erste Charge</label>
+          <input id="firstChargeInput" type="text" placeholder="Erste Charge eingeben oder scannen" />
+        </div>
+
+        <div class="toolbar">
+          <button id="saveMaterialChange" class="success">Materialwechsel speichern</button>
+        </div>
+      </div>
+
+      <div class="panel half">
+        <h2 class="title">Hinweis</h2>
+        <div class="status-box">
+          <span class="lamp ok"></span>
+          <span>Beim Speichern werden Materialnummer und Soll-Charge des gewählten Platzes gesetzt.</span>
+        </div>
+
+        <div class="status-box" style="margin-top:12px;">
+          <span class="lamp ok"></span>
+          <span>Der Status wird dabei auf OK gesetzt, damit die nächste Chargenerfassung sauber gegen die neue Soll-Charge vergleicht.</span>
+        </div>
       </div>
     </section>
 
@@ -390,16 +413,16 @@
               <tr>
                 <th>Zeit</th>
                 <th>Platz</th>
+                <th>Materialnummer</th>
                 <th>Soll-Charge</th>
                 <th>Ist-Charge</th>
                 <th>Status</th>
-                <th>Mitarbeiter</th>
               </tr>
             </thead>
             <tbody id="historyBody"></tbody>
           </table>
         </div>
-        <div class="footer-note">Version: production-places-v8-overview</div>
+        <div class="footer-note">Version: production-v9-materialchange</div>
       </div>
     </section>
   </div>
@@ -407,7 +430,6 @@
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
     import { getDatabase, ref, set, update, onValue, push, get } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js';
-    import { Html5Qrcode } from 'https://esm.sh/html5-qrcode@2.3.8';
 
     const places = [
       ...Array.from({ length: 15 }, (_, i) => String(101 + i)),
@@ -432,22 +454,15 @@
       phase: 'place',
       currentPlace: '',
       scannedCharge: '',
-      operator: '',
       app: null,
       db: null,
       liveData: { places: {}, history: [] },
-      camera: null,
       initialized: false,
-      isCameraRunning: false,
-      cameraLocked: false,
-      lastCameraCode: '',
-      lastCameraTs: 0,
       dashboardFilter: 'all',
     };
 
     const el = (id) => document.getElementById(id);
     const nowStr = () => new Date().toLocaleString('de-CH');
-    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
     function isDryerPlace(place) {
       return place.startsWith('Motan') || place.startsWith('Moretto');
@@ -462,15 +477,9 @@
     }
 
     function getFilteredPlaces() {
-      if (state.dashboardFilter === 'numbers') {
-        return places.filter(isNumberPlace);
-      }
-      if (state.dashboardFilter === 'dryers') {
-        return places.filter(isDryerPlace);
-      }
-      if (state.dashboardFilter === 'silos') {
-        return places.filter(isSiloPlace);
-      }
+      if (state.dashboardFilter === 'numbers') return places.filter(isNumberPlace);
+      if (state.dashboardFilter === 'dryers') return places.filter(isDryerPlace);
+      if (state.dashboardFilter === 'silos') return places.filter(isSiloPlace);
       return places;
     }
 
@@ -480,24 +489,26 @@
         obj[p] = {
           place: p,
           status: 'ok',
+          materialNumber: '',
           expectedCharge: '',
           actualCharge: '',
           updatedAt: '',
-          operator: '',
         };
       });
       return { places: obj, history: [] };
     }
 
-    function fillPlaceSelect() {
-      const select = el('placeSelect');
-      select.innerHTML =
+    function fillPlaceSelects() {
+      const options =
         '<option value="">Bitte Platz wählen</option>' +
         places.map((p) => `<option value="${p}">${p}</option>`).join('');
+
+      el('placeSelect').innerHTML = options;
+      el('materialPlaceSelect').innerHTML = options;
     }
 
     function setView(name) {
-      ['scan', 'dashboard', 'overview'].forEach((v) => {
+      ['scan', 'dashboard', 'overview', 'material'].forEach((v) => {
         const node = el(`view-${v}`);
         if (node) node.classList.add('hidden');
       });
@@ -510,7 +521,6 @@
       state.phase = 'place';
       state.currentPlace = '';
       state.scannedCharge = '';
-      state.operator = el('operator').value.trim();
       el('placeSelect').value = '';
       renderFlow();
       el('scanInput').focus();
@@ -556,22 +566,24 @@
       return data[place] || {
         place,
         status: 'ok',
+        materialNumber: '',
         expectedCharge: '',
         actualCharge: '',
         updatedAt: '',
-        operator: '',
       };
     }
 
-    async function writeScan(place, scannedCharge, operator) {
+    async function writeScan(place, scannedCharge) {
       const placeData = getPlaceData(place);
-      let expectedCharge = placeData.expectedCharge || '';
+      const expectedCharge = placeData.expectedCharge || '';
+      const materialNumber = placeData.materialNumber || '';
+
       let status = 'ok';
       let message = '';
 
       if (!expectedCharge) {
-        expectedCharge = scannedCharge;
-        message = `Platz ${place}: erste Soll-Charge gesetzt (${scannedCharge}).`;
+        status = 'error';
+        message = `Platz ${place}: Keine Soll-Charge hinterlegt. Bitte zuerst Materialwechsel erfassen.`;
       } else if (expectedCharge === scannedCharge) {
         message = `Platz ${place}: Charge stimmt mit Soll-Charge überein (${scannedCharge}).`;
       } else {
@@ -582,42 +594,75 @@
       const record = {
         place,
         status,
+        materialNumber,
         expectedCharge,
         actualCharge: scannedCharge,
         updatedAt: nowStr(),
-        operator: operator || '',
       };
 
       const historyItem = {
         ...record,
         id: `${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
+        type: 'scan',
       };
 
       await update(ref(state.db, `materialbahnhof/places/${place}`), record);
       await push(ref(state.db, 'materialbahnhof/history'), historyItem);
+
       setLastResult(status === 'ok' ? 'ok' : 'error', message);
     }
 
-    async function resetPlace(place) {
+    async function saveMaterialChange(place, materialNumber, firstCharge) {
       const record = {
         place,
         status: 'ok',
-        expectedCharge: '',
-        actualCharge: '',
+        materialNumber,
+        expectedCharge: firstCharge,
+        actualCharge: firstCharge,
         updatedAt: nowStr(),
-        operator: '',
       };
 
       const historyItem = {
         ...record,
         id: `${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
-        reset: true,
+        type: 'materialChange',
       };
 
       await set(ref(state.db, `materialbahnhof/places/${place}`), record);
       await push(ref(state.db, 'materialbahnhof/history'), historyItem);
-      setLastResult('ok', `Platz ${place} wurde zurückgesetzt.`);
+
+      setLastResult('ok', `Materialwechsel für Platz ${place} gespeichert. Material ${materialNumber}, Soll-Charge ${firstCharge}.`);
     }
+
+async function resetPlace(place) {
+  const placeData = getPlaceData(place);
+
+  const newExpectedCharge = placeData.actualCharge || placeData.expectedCharge || '';
+
+  const record = {
+    place,
+    status: 'ok',
+    materialNumber: placeData.materialNumber || '',
+    expectedCharge: newExpectedCharge,
+    actualCharge: placeData.actualCharge || '',
+    updatedAt: nowStr(),
+  };
+
+  const historyItem = {
+    ...record,
+    id: `${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
+    reset: true,
+    type: 'reset',
+  };
+
+  await set(ref(state.db, `materialbahnhof/places/${place}`), record);
+  await push(ref(state.db, 'materialbahnhof/history'), historyItem);
+
+  setLastResult(
+    'ok',
+    `Platz ${place} wurde zurückgesetzt. Neue Soll-Charge ist jetzt ${newExpectedCharge || '-'}.`
+  );
+}
 
     function normalizeHistory(historyRaw) {
       if (Array.isArray(historyRaw)) return historyRaw;
@@ -631,7 +676,14 @@
       let active = 0;
 
       getFilteredPlaces().forEach((place) => {
-        const p = data[place] || { place, status: 'ok', expectedCharge: '', actualCharge: '' };
+        const p = data[place] || {
+          place,
+          status: 'ok',
+          materialNumber: '',
+          expectedCharge: '',
+          actualCharge: ''
+        };
+
         if (p.status === 'error') active++;
 
         const lampClass = p.status === 'error' ? 'error' : 'ok';
@@ -645,6 +697,8 @@
           </div>
           <div class="small">Status</div>
           <div>${p.status === 'error' ? 'Abweichung' : 'OK'}</div>
+          <div class="small">Materialnummer</div>
+          <div class="value">${p.materialNumber || '-'}</div>
           <div class="small">Soll-Charge</div>
           <div class="value">${p.expectedCharge || '-'}</div>
           <div class="small">Ist-Charge</div>
@@ -675,10 +729,10 @@
         <tr>
           <td>${item.updatedAt || '-'}</td>
           <td>${item.place || '-'}</td>
+          <td>${item.materialNumber || '-'}</td>
           <td>${item.expectedCharge || '-'}</td>
           <td>${item.actualCharge || '-'}</td>
-          <td>${item.reset ? 'Reset' : item.status === 'error' ? 'Abweichung' : 'OK'}</td>
-          <td>${item.operator || '-'}</td>
+          <td>${item.reset ? 'Reset' : item.type === 'materialChange' ? 'Materialwechsel' : item.status === 'error' ? 'Abweichung' : 'OK'}</td>
         </tr>
       `).join('');
     }
@@ -717,6 +771,8 @@
         card.className = 'overview-error-card';
         card.innerHTML = `
           <div class="place-name">${p.place}</div>
+          <div class="small">Materialnummer</div>
+          <div class="value">${p.materialNumber || '-'}</div>
           <div class="small">Soll-Charge</div>
           <div class="value">${p.expectedCharge || '-'}</div>
           <div class="small">Ist-Charge</div>
@@ -749,102 +805,30 @@
       el('scanInput').focus();
     }
 
-    async function withCameraLock(fn) {
-      if (state.cameraLocked) return;
-      state.cameraLocked = true;
-      try {
-        await fn();
-      } finally {
-        await sleep(1200);
-        state.cameraLocked = false;
-      }
-    }
-
-    async function processCode(raw, source = 'manual') {
+    async function processCode(raw) {
       const code = String(raw || '').trim();
       if (!code) return;
-
-      state.operator = el('operator').value.trim();
 
       if (!state.initialized) {
         setLastResult('error', 'Datenbank wird noch geladen. Bitte kurz warten.');
         return;
       }
 
-      if (source === 'camera') {
-        const now = Date.now();
-        if (state.cameraLocked) return;
-        if (state.lastCameraCode === code && now - state.lastCameraTs < 1500) return;
-        state.lastCameraCode = code;
-        state.lastCameraTs = now;
-      }
-
       if (state.phase === 'place') {
         if (!places.includes(code)) {
-          if (source !== 'camera') {
-            setLastResult('error', `Ungültiger Platzcode: ${code}. Bitte Platz scannen oder manuell wählen.`);
-          }
+          setLastResult('error', `Ungültiger Platzcode: ${code}. Bitte Platz scannen oder manuell wählen.`);
           return;
         }
 
-        if (source === 'camera') {
-          await withCameraLock(async () => {
-            setSelectedPlace(code);
-            setLastResult('ok', `Platz ${code} per Kamera erkannt. Jetzt Charge scannen.`);
-          });
-        } else {
-          setSelectedPlace(code);
-        }
+        setSelectedPlace(code);
         return;
       }
 
       if (state.phase === 'charge') {
-        if (source === 'camera') {
-          await withCameraLock(async () => {
-            state.scannedCharge = code;
-            renderFlow();
-            await writeScan(state.currentPlace, state.scannedCharge, state.operator);
-            resetFlow();
-          });
-        } else {
-          state.scannedCharge = code;
-          renderFlow();
-          await writeScan(state.currentPlace, state.scannedCharge, state.operator);
-          resetFlow();
-        }
-      }
-    }
-
-    async function startCamera() {
-      try {
-        el('reader').classList.remove('hidden');
-        if (!state.camera) state.camera = new Html5Qrcode('reader');
-
-        await state.camera.start(
-          { facingMode: 'environment' },
-          { fps: 8, qrbox: { width: 280, height: 140 } },
-          async (decodedText) => { await processCode(decodedText, 'camera'); },
-          () => {}
-        );
-
-        state.isCameraRunning = true;
-        setLastResult('ok', 'Kamera gestartet. Gültige Treffer werden kurz gesperrt, damit nichts springt.');
-      } catch (err) {
-        console.error(err);
-        setLastResult('error', 'Kamera konnte nicht gestartet werden. Bitte Browserberechtigung prüfen.');
-      }
-    }
-
-    async function stopCamera() {
-      try {
-        if (state.camera && state.isCameraRunning) {
-          await state.camera.stop();
-          await state.camera.clear();
-          state.isCameraRunning = false;
-        }
-        el('reader').classList.add('hidden');
-      } catch (err) {
-        console.error(err);
+        state.scannedCharge = code;
+        renderFlow();
+        await writeScan(state.currentPlace, state.scannedCharge);
+        resetFlow();
       }
     }
 
@@ -852,23 +836,22 @@
       el('tab-scan').addEventListener('click', () => setView('scan'));
       el('tab-dashboard').addEventListener('click', () => setView('dashboard'));
       el('tab-overview').addEventListener('click', () => setView('overview'));
+      el('tab-material').addEventListener('click', () => setView('material'));
 
       el('manualSubmit').addEventListener('click', async () => {
-        await processCode(el('scanInput').value, 'manual');
+        await processCode(el('scanInput').value);
         el('scanInput').value = '';
         el('scanInput').focus();
       });
 
       el('scanInput').addEventListener('keydown', async (e) => {
         if (e.key === 'Enter') {
-          await processCode(el('scanInput').value, 'manual');
+          await processCode(el('scanInput').value);
           el('scanInput').value = '';
         }
       });
 
       el('resetFlow').addEventListener('click', resetFlow);
-      el('startCamera').addEventListener('click', startCamera);
-      el('stopCamera').addEventListener('click', stopCamera);
 
       el('useSelectedPlace').addEventListener('click', () => {
         const selected = el('placeSelect').value;
@@ -884,6 +867,33 @@
         if (selected && state.phase === 'place') {
           setSelectedPlace(selected);
         }
+      });
+
+      el('saveMaterialChange').addEventListener('click', async () => {
+        const place = el('materialPlaceSelect').value;
+        const materialNumber = el('materialNumberInput').value.trim();
+        const firstCharge = el('firstChargeInput').value.trim();
+
+        if (!place) {
+          setLastResult('error', 'Bitte Platz für Materialwechsel wählen.');
+          return;
+        }
+
+        if (!materialNumber) {
+          setLastResult('error', 'Bitte Materialnummer eingeben.');
+          return;
+        }
+
+        if (!firstCharge) {
+          setLastResult('error', 'Bitte erste Charge eingeben.');
+          return;
+        }
+
+        await saveMaterialChange(place, materialNumber, firstCharge);
+
+        el('materialPlaceSelect').value = '';
+        el('materialNumberInput').value = '';
+        el('firstChargeInput').value = '';
       });
 
       const allBtn = el('filter-all');
@@ -920,7 +930,7 @@
       }
     }
 
-    fillPlaceSelect();
+    fillPlaceSelects();
     bindEvents();
     renderAll();
     resetFlow();
