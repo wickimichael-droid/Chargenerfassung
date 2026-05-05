@@ -507,15 +507,29 @@
       el('materialPlaceSelect').innerHTML = options;
     }
 
-    function setView(name) {
-      ['scan', 'dashboard', 'overview', 'material'].forEach((v) => {
-        const node = el(`view-${v}`);
-        if (node) node.classList.add('hidden');
-      });
+function setView(name, updateHash = true) {
+  ['scan', 'dashboard', 'overview', 'material'].forEach((v) => {
+    const node = el(`view-${v}`);
+    if (node) node.classList.add('hidden');
 
-      const target = el(`view-${name}`);
-      if (target) target.classList.remove('hidden');
-    }
+    const btn = el(`tab-${v}`);
+    if (btn) btn.classList.remove('primary');
+  });
+
+  const activeView = el(`view-${name}`);
+  if (activeView) activeView.classList.remove('hidden');
+
+  const activeBtn = el(`tab-${name}`);
+  if (activeBtn) activeBtn.classList.add('primary');
+
+  if (updateHash) {
+    window.location.hash = name;
+  }
+
+  if (name === 'scan') {
+    resetFlow();
+  }
+}
 
     function resetFlow() {
       state.phase = 'place';
@@ -931,9 +945,17 @@ async function resetPlace(place) {
     }
 
     fillPlaceSelects();
-    bindEvents();
-    renderAll();
-    resetFlow();
+fillPlaceSelects();
+bindEvents();
+renderAll();
+
+const startView = window.location.hash.replace('#', '') || 'scan';
+
+if (['scan', 'dashboard', 'overview', 'material'].includes(startView)) {
+  setView(startView, false);
+} else {
+  setView('scan', false);
+}
     initFirebase();
   </script>
 </body>
