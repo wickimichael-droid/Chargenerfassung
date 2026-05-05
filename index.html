@@ -363,7 +363,7 @@
 
         <div class="status-box" style="margin-top:12px;">
           <span class="lamp ok"></span>
-          <span>Der Status wird dabei auf OK gesetzt, damit die nächste Chargenerfassung sauber gegen die neue Soll-Charge vergleicht.</span>
+          <span>Der Status wird dabei auf OK gesetzt.</span>
         </div>
       </div>
     </section>
@@ -422,7 +422,7 @@
             <tbody id="historyBody"></tbody>
           </table>
         </div>
-        <div class="footer-note">Version: production-v9-materialchange</div>
+        <div class="footer-note">Version: production-v10-hash-navigation</div>
       </div>
     </section>
   </div>
@@ -463,6 +463,23 @@
 
     const el = (id) => document.getElementById(id);
     const nowStr = () => new Date().toLocaleString('de-CH');
+
+    const viewAlias = {
+      scan: 'scan',
+      chargenerfassung: 'scan',
+      material: 'material',
+      materialwechsel: 'material',
+      dashboard: 'dashboard',
+      schichtleiter: 'dashboard',
+      overview: 'overview',
+      uebersicht: 'overview',
+      übersicht: 'overview'
+    };
+
+    function getViewFromHash() {
+      const raw = decodeURIComponent(window.location.hash.replace('#', '')).toLowerCase();
+      return viewAlias[raw] || 'scan';
+    }
 
     function isDryerPlace(place) {
       return place.startsWith('Motan') || place.startsWith('Moretto');
@@ -507,29 +524,32 @@
       el('materialPlaceSelect').innerHTML = options;
     }
 
-function setView(name, updateHash = true) {
-  ['scan', 'dashboard', 'overview', 'material'].forEach((v) => {
-    const node = el(`view-${v}`);
-    if (node) node.classList.add('hidden');
+    function setView(name, updateHash = true) {
+      const viewName = viewAlias[name] || name;
 
-    const btn = el(`tab-${v}`);
-    if (btn) btn.classList.remove('primary');
-  });
+      ['scan', 'dashboard', 'overview', 'material'].forEach((v) => {
+        const node = el(`view-${v}`);
+        if (node) node.classList.add('hidden');
 
-  const activeView = el(`view-${name}`);
-  if (activeView) activeView.classList.remove('hidden');
+        const btn = el(`tab-${v}`);
+        if (btn) btn.classList.remove('primary');
+      });
 
-  const activeBtn = el(`tab-${name}`);
-  if (activeBtn) activeBtn.classList.add('primary');
+      const activeView = el(`view-${viewName}`);
+      if (activeView) activeView.classList.remove('hidden');
 
-  if (updateHash) {
-    window.location.hash = name;
-  }
+      const activeBtn = el(`tab-${viewName}`);
+      if (activeBtn) activeBtn.classList.add('primary');
 
-  if (name === 'scan') {
-    resetFlow();
-  }
-}
+      if (updateHash) {
+        const hashName = viewName === 'overview' ? 'uebersicht' : viewName;
+        history.replaceState(null, '', `#${hashName}`);
+      }
+
+      if (viewName === 'scan') {
+        resetFlow();
+      }
+    }
 
     function resetFlow() {
       state.phase = 'place';
@@ -537,7 +557,10 @@ function setView(name, updateHash = true) {
       state.scannedCharge = '';
       el('placeSelect').value = '';
       renderFlow();
-      el('scanInput').focus();
+
+      if (!el('view-scan').classList.contains('hidden')) {
+        el('scanInput').focus();
+      }
     }
 
     function renderFlow() {
@@ -648,35 +671,32 @@ function setView(name, updateHash = true) {
       setLastResult('ok', `Materialwechsel für Platz ${place} gespeichert. Material ${materialNumber}, Soll-Charge ${firstCharge}.`);
     }
 
-async function resetPlace(place) {
-  const placeData = getPlaceData(place);
+    async function resetPlace(place) {
+      const placeData = getPlaceData(place);
 
-  const newExpectedCharge = placeData.actualCharge || placeData.expectedCharge || '';
+      const newExpectedCharge = placeData.actualCharge || placeData.expectedCharge || '';
 
-  const record = {
-    place,
-    status: 'ok',
-    materialNumber: placeData.materialNumber || '',
-    expectedCharge: newExpectedCharge,
-    actualCharge: placeData.actualCharge || '',
-    updatedAt: nowStr(),
-  };
+      const record = {
+        place,
+        status: 'ok',
+        materialNumber: placeData.materialNumber || '',
+        expectedCharge: newExpectedCharge,
+        actualCharge: placeData.actualCharge || '',
+        updatedAt: nowStr(),
+      };
 
-  const historyItem = {
-    ...record,
-    id: `${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
-    reset: true,
-    type: 'reset',
-  };
+      const historyItem = {
+        ...record,
+        id: `${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
+        reset: true,
+        type: 'reset',
+      };
 
-  await set(ref(state.db, `materialbahnhof/places/${place}`), record);
-  await push(ref(state.db, 'materialbahnhof/history'), historyItem);
+      await set(ref(state.db, `materialbahnhof/places/${place}`), record);
+      await push(ref(state.db, 'materialbahnhof/history'), historyItem);
 
-  setLastResult(
-    'ok',
-    `Platz ${place} wurde zurückgesetzt. Neue Soll-Charge ist jetzt ${newExpectedCharge || '-'}.`
-  );
-}
+      setLastResult('ok', `Platz ${place} wurde zurückgesetzt. Neue Soll-Charge ist jetzt ${newExpectedCharge || '-'}.`);
+    }
 
     function normalizeHistory(historyRaw) {
       if (Array.isArray(historyRaw)) return historyRaw;
@@ -685,6 +705,8 @@ async function resetPlace(place) {
 
     function renderPlaces() {
       const host = el('places');
+      if (!host) return;
+
       host.innerHTML = '';
       const data = state.liveData?.places || defaultData().places;
       let active = 0;
@@ -737,6 +759,8 @@ async function resetPlace(place) {
 
     function renderHistory() {
       const body = el('historyBody');
+      if (!body) return;
+
       const history = normalizeHistory(state.liveData?.history).slice(0, 200);
 
       body.innerHTML = history.map((item) => `
@@ -910,52 +934,35 @@ async function resetPlace(place) {
         el('firstChargeInput').value = '';
       });
 
-      const allBtn = el('filter-all');
-      const numbersBtn = el('filter-numbers');
-      const dryersBtn = el('filter-dryers');
-      const silosBtn = el('filter-silos');
+      el('filter-all').addEventListener('click', () => {
+        state.dashboardFilter = 'all';
+        renderPlaces();
+      });
 
-      if (allBtn) {
-        allBtn.addEventListener('click', () => {
-          state.dashboardFilter = 'all';
-          renderPlaces();
-        });
-      }
+      el('filter-numbers').addEventListener('click', () => {
+        state.dashboardFilter = 'numbers';
+        renderPlaces();
+      });
 
-      if (numbersBtn) {
-        numbersBtn.addEventListener('click', () => {
-          state.dashboardFilter = 'numbers';
-          renderPlaces();
-        });
-      }
+      el('filter-dryers').addEventListener('click', () => {
+        state.dashboardFilter = 'dryers';
+        renderPlaces();
+      });
 
-      if (dryersBtn) {
-        dryersBtn.addEventListener('click', () => {
-          state.dashboardFilter = 'dryers';
-          renderPlaces();
-        });
-      }
+      el('filter-silos').addEventListener('click', () => {
+        state.dashboardFilter = 'silos';
+        renderPlaces();
+      });
 
-      if (silosBtn) {
-        silosBtn.addEventListener('click', () => {
-          state.dashboardFilter = 'silos';
-          renderPlaces();
-        });
-      }
+      window.addEventListener('hashchange', () => {
+        setView(getViewFromHash(), false);
+      });
     }
 
     fillPlaceSelects();
-fillPlaceSelects();
-bindEvents();
-renderAll();
-
-const startView = window.location.hash.replace('#', '') || 'scan';
-
-if (['scan', 'dashboard', 'overview', 'material'].includes(startView)) {
-  setView(startView, false);
-} else {
-  setView('scan', false);
-}
+    bindEvents();
+    renderAll();
+    setView(getViewFromHash(), false);
     initFirebase();
   </script>
 </body>
