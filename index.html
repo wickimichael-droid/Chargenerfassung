@@ -342,6 +342,7 @@
         <div class="scan-row">
           <label for="materialNumberInput">Materialnummer</label>
           <input id="materialNumberInput" type="text" placeholder="Materialnummer eingeben oder scannen" />
+          <div id="articleHint" class="small" aria-live="polite"></div>
         </div>
 
         <div class="scan-row">
@@ -357,10 +358,10 @@
             <button id="addArticle">Artikel hinzufügen</button>
           </div>
         </div>
-        <div id="articleHint" class="small"></div>
         <div class="toolbar">
           <button id="saveMaterialChange" class="success">Materialwechsel speichern</button>
         </div>
+        <div id="materialResult" class="status-box hidden" role="status" aria-live="polite"></div>
       </div>
 
       <div class="panel half">
@@ -593,6 +594,17 @@
       el('lastResult').innerHTML = `<span class="lamp ${map[kind] || ''}"></span><span>${text}</span>`;
     }
 
+    function setMaterialResult(kind, text) {
+      const box = el('materialResult');
+      box.classList.remove('hidden');
+      box.replaceChildren();
+      const lamp = document.createElement('span');
+      lamp.className = `lamp ${kind === 'ok' ? 'ok' : 'error'}`;
+      const message = document.createElement('span');
+      message.textContent = text;
+      box.append(lamp, message);
+    }
+
     async function initFirebase() {
       state.app = initializeApp(FIREBASE_CONFIG);
       // Replace with the public reCAPTCHA v3 site key registered for this GitHub Pages domain.
@@ -707,13 +719,15 @@
 
       const article = state.liveData?.articles?.[materialNumber];
       if (!article) {
-        setLastResult('error', 'Artikelnummer fehlt in der Artikelliste. Bitte zuerst erfassen.');
-        return;
+        setMaterialResult('error', `Artikelnummer ${materialNumber} ist nicht in der Artikelliste. Bitte zuerst erfassen.`);
+        el('materialNumberInput').focus();
+        return false;
       }
       await set(ref(state.db, `materialbahnhof/places/${place}`), record);
       await push(ref(state.db, 'materialbahnhof/history'), historyItem);
 
-      setLastResult('ok', `Materialwechsel für Platz ${place} gespeichert. Material ${materialNumber}, Soll-Charge ${firstCharge}.`);
+      setMaterialResult('ok', `Materialwechsel für Platz ${place} gespeichert. Material ${materialNumber}, Soll-Charge ${firstCharge}.`);
+      return true;
     }
 
     async function resetPlace(place) {
@@ -969,23 +983,26 @@
       });
 
       el('materialNumberInput').addEventListener('input', () => {
-        const article = state.liveData?.articles?.[el('materialNumberInput').value.trim()];
-        el('articleHint').textContent = article ? article.bezeichnung : 'Artikelnummer nicht in der Liste';
+        const number = el('materialNumberInput').value.trim();
+        const article = state.liveData?.articles?.[number];
+        el('articleHint').textContent = number ? (article ? article.bezeichnung : 'Artikelnummer nicht in der Liste') : '';
+        el('articleHint').classList.toggle('warning-text', Boolean(number && !article));
+        el('materialResult').classList.add('hidden');
       });
       el('addArticle').addEventListener('click', async () => {
         const number = el('articleNumberInput').value.trim();
         const name = el('articleNameInput').value.trim();
         if (!/^\d{1,20}$/.test(number) || !name || name.length > 120) {
-          setLastResult('error', 'Bitte gültige Artikelnummer und Bezeichnung eingeben.'); return;
+          setMaterialResult('error', 'Bitte gültige Artikelnummer und Bezeichnung eingeben.'); return;
         }
         if (state.liveData?.articles?.[number]) {
-          setLastResult('error', 'Artikelnummer ist bereits vorhanden.'); return;
+          setMaterialResult('error', 'Artikelnummer ist bereits vorhanden.'); return;
         }
         try {
           await set(ref(state.db, `materialbahnhof/articles/${number}`), {bezeichnung: name});
           el('articleNumberInput').value = ''; el('articleNameInput').value = '';
-          setLastResult('ok', `Artikel ${number} erfasst.`);
-        } catch (error) { setLastResult('error', error.message); }
+          setMaterialResult('ok', `Artikel ${number} erfasst.`);
+        } catch (error) { setMaterialResult('error', error.message); }
       });
       el('exportHistory').addEventListener('click', exportHistory);
       el('saveMaterialChange').addEventListener('click', async () => {
@@ -994,25 +1011,28 @@
         const firstCharge = el('firstChargeInput').value.trim();
 
         if (!place) {
-          setLastResult('error', 'Bitte Platz für Materialwechsel wählen.');
+          setMaterialResult('error', 'Bitte Platz für Materialwechsel wählen.');
           return;
         }
 
         if (!materialNumber) {
-          setLastResult('error', 'Bitte Materialnummer eingeben.');
+          setMaterialResult('error', 'Bitte Materialnummer eingeben.');
           return;
         }
 
         if (!firstCharge) {
-          setLastResult('error', 'Bitte erste Charge eingeben.');
+          setMaterialResult('error', 'Bitte erste Charge eingeben.');
           return;
         }
 
-        await saveMaterialChange(place, materialNumber, firstCharge);
-
-        el('materialPlaceSelect').value = '';
-        el('materialNumberInput').value = '';
-        el('firstChargeInput').value = '';
+        try {
+          if (await saveMaterialChange(place, materialNumber, firstCharge)) {
+            el('materialPlaceSelect').value = '';
+            el('materialNumberInput').value = '';
+            el('firstChargeInput').value = '';
+            el('articleHint').textContent = '';
+          }
+        } catch (error) { setMaterialResult('error', `Materialwechsel konnte nicht gespeichert werden: ${error.message}`); }
       });
 
       el('filter-all').addEventListener('click', () => {
