@@ -263,6 +263,11 @@
 
   <div class="wrap">
     <div class="toolbar">
+      <button id="signInButton">Mit Google anmelden</button>
+      <button id="signOutButton" class="hidden">Abmelden</button>
+      <span id="authStatus" class="small">Nicht angemeldet</span>
+    </div>
+    <div class="toolbar">
       <button id="tab-scan" class="primary">Chargenerfassung</button>
       <button id="tab-material">Materialwechsel</button>
       <button id="tab-dashboard">Dashboard Schichtleiter</button>
@@ -349,6 +354,15 @@
           <input id="firstChargeInput" type="text" placeholder="Erste Charge eingeben oder scannen" />
         </div>
 
+        <div class="scan-row">
+          <label for="articleNameInput">Neuen Artikel erfassen</label>
+          <div class="inline-fields">
+            <input id="articleNumberInput" placeholder="Artikelnummer" inputmode="numeric">
+            <input id="articleNameInput" placeholder="Artikelbezeichnung">
+            <button id="addArticle">Artikel hinzufügen</button>
+          </div>
+        </div>
+        <div id="articleHint" class="small"></div>
         <div class="toolbar">
           <button id="saveMaterialChange" class="success">Materialwechsel speichern</button>
         </div>
@@ -407,6 +421,11 @@
 
       <div class="panel">
         <h2 class="title">Historie</h2>
+        <div class="toolbar">
+          <label>Von <input type="date" id="exportFrom"></label>
+          <label>Bis <input type="date" id="exportTo"></label>
+          <button id="exportHistory">Excel exportieren</button>
+        </div>
         <div class="history">
           <table>
             <thead>
@@ -422,14 +441,15 @@
             <tbody id="historyBody"></tbody>
           </table>
         </div>
-        <div class="footer-note">Version: production-v10-hash-navigation</div>
+        <div class="footer-note">Version: production-v11-artikel-historie</div>
       </div>
     </section>
   </div>
 
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
-    import { getDatabase, ref, set, update, onValue, push, get } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js';
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js';
+    import { getDatabase, ref, set, update, onValue, push, get, remove } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js';
 
     const places = [
       ...Array.from({ length: 15 }, (_, i) => String(101 + i)),
@@ -456,7 +476,9 @@
       scannedCharge: '',
       app: null,
       db: null,
-      liveData: { places: {}, history: [] },
+      auth: null,
+      unsubscribe: null,
+      liveData: { places: {}, history: {}, articles: {} },
       initialized: false,
       dashboardFilter: 'all',
     };
@@ -512,7 +534,7 @@
           updatedAt: '',
         };
       });
-      return { places: obj, history: [] };
+      return { places: obj, history: {} };
     }
 
     function fillPlaceSelects() {
@@ -577,24 +599,32 @@
     async function initFirebase() {
       state.app = initializeApp(FIREBASE_CONFIG);
       state.db = getDatabase(state.app);
-
-      const rootRef = ref(state.db, 'materialbahnhof');
-      const snapshot = await get(rootRef);
-
-      if (!snapshot.exists()) {
-        await set(rootRef, defaultData());
-      } else {
-        const existing = snapshot.val();
-        const merged = defaultData();
-        merged.history = existing.history || [];
-        merged.places = { ...merged.places, ...(existing.places || {}) };
-        await set(rootRef, merged);
-      }
-
-      onValue(rootRef, (liveSnapshot) => {
-        state.liveData = liveSnapshot.val() || defaultData();
-        state.initialized = true;
-        renderAll();
+      state.auth = getAuth(state.app);
+      el('signInButton').addEventListener('click', async () => {
+        try { await signInWithPopup(state.auth, new GoogleAuthProvider()); }
+        catch (error) { setLastResult('error', `Anmeldung fehlgeschlagen: ${error.message}`); }
+      });
+      el('signOutButton').addEventListener('click', () => signOut(state.auth));
+      onAuthStateChanged(state.auth, async user => {
+        if (state.unsubscribe) { state.unsubscribe(); state.unsubscribe = null; }
+        state.initialized = false;
+        el('signInButton').classList.toggle('hidden', !!user);
+        el('signOutButton').classList.toggle('hidden', !user);
+        el('authStatus').textContent = user ? `Angemeldet: ${user.email || user.uid}` : 'Nicht angemeldet';
+        if (!user) { state.liveData = defaultData(); renderAll(); return; }
+        try {
+          const placesRef = ref(state.db, 'materialbahnhof/places');
+          const existing = (await get(placesRef)).val() || {};
+          const missing = {};
+          const defaults = defaultData().places;
+          for (const place of places) if (!existing[place]) missing[place] = defaults[place];
+          if (Object.keys(missing).length) await update(placesRef, missing);
+          state.unsubscribe = onValue(ref(state.db, 'materialbahnhof'), snapshot => {
+            state.liveData = snapshot.val() || defaultData();
+            state.initialized = true;
+            renderAll();
+          }, error => setLastResult('error', `Datenbankzugriff fehlgeschlagen: ${error.message}`));
+        } catch (error) { setLastResult('error', `Datenbankzugriff fehlgeschlagen: ${error.message}`); }
       });
     }
 
@@ -641,6 +671,7 @@
         ...record,
         id: `${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
         type: 'scan',
+        timestamp: Date.now(),
       };
 
       await update(ref(state.db, `materialbahnhof/places/${place}`), record);
@@ -663,8 +694,14 @@
         ...record,
         id: `${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
         type: 'materialChange',
+        timestamp: Date.now(),
       };
 
+      const article = state.liveData?.articles?.[materialNumber];
+      if (!article) {
+        setLastResult('error', 'Artikelnummer fehlt in der Artikelliste. Bitte zuerst erfassen.');
+        return;
+      }
       await set(ref(state.db, `materialbahnhof/places/${place}`), record);
       await push(ref(state.db, 'materialbahnhof/history'), historyItem);
 
@@ -690,6 +727,7 @@
         id: `${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
         reset: true,
         type: 'reset',
+        timestamp: Date.now(),
       };
 
       await set(ref(state.db, `materialbahnhof/places/${place}`), record);
@@ -700,7 +738,7 @@
 
     function normalizeHistory(historyRaw) {
       if (Array.isArray(historyRaw)) return historyRaw;
-      return Object.values(historyRaw || {}).sort((a, b) => (b.id || '').localeCompare(a.id || ''));
+      return Object.values(historyRaw || {}).sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
     }
 
     function renderPlaces() {
@@ -761,7 +799,7 @@
       const body = el('historyBody');
       if (!body) return;
 
-      const history = normalizeHistory(state.liveData?.history).slice(0, 200);
+      const history = normalizeHistory(state.liveData?.history).filter(item => item.timestamp >= Date.now() - 14 * 86400000).slice(0, 200);
 
       body.innerHTML = history.map((item) => `
         <tr>
@@ -870,6 +908,21 @@
       }
     }
 
+    function exportHistory() {
+      const from = el('exportFrom').value, to = el('exportTo').value;
+      if (!from || !to || from > to) { setLastResult('error', 'Bitte einen gültigen Zeitraum wählen.'); return; }
+      const start = new Date(`${from}T00:00:00`).getTime();
+      const end = new Date(`${to}T23:59:59.999`).getTime();
+      const rows = normalizeHistory(state.liveData?.history).filter(x => x.timestamp >= start && x.timestamp <= end && x.timestamp >= Date.now() - 14 * 86400000);
+      const esc = value => `"${String(value ?? '').replace(/^[=+@-]/, "'").replaceAll('"', '""')}"`;
+      const cols = ['Zeit', 'Platz', 'Artikelnummer', 'Soll-Charge', 'Ist-Charge', 'Status'];
+      const data = [cols, ...rows.map(x => [x.updatedAt, x.place, x.materialNumber, x.expectedCharge, x.actualCharge, x.reset ? 'Reset' : x.type === 'materialChange' ? 'Materialwechsel' : x.status === 'error' ? 'Abweichung' : 'OK'])];
+      const blob = new Blob(['\ufeff' + data.map(row => row.map(esc).join(';')).join('\r\n')], {type: 'text/csv;charset=utf-8'});
+      const url = URL.createObjectURL(blob), link = document.createElement('a');
+      link.href = url; link.download = `historie_${from}_bis_${to}.csv`; link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
     function bindEvents() {
       el('tab-scan').addEventListener('click', () => setView('scan'));
       el('tab-dashboard').addEventListener('click', () => setView('dashboard'));
@@ -907,6 +960,26 @@
         }
       });
 
+      el('materialNumberInput').addEventListener('input', () => {
+        const article = state.liveData?.articles?.[el('materialNumberInput').value.trim()];
+        el('articleHint').textContent = article ? article.bezeichnung : 'Artikelnummer nicht in der Liste';
+      });
+      el('addArticle').addEventListener('click', async () => {
+        const number = el('articleNumberInput').value.trim();
+        const name = el('articleNameInput').value.trim();
+        if (!/^\d{1,20}$/.test(number) || !name || name.length > 120) {
+          setLastResult('error', 'Bitte gültige Artikelnummer und Bezeichnung eingeben.'); return;
+        }
+        if (state.liveData?.articles?.[number]) {
+          setLastResult('error', 'Artikelnummer ist bereits vorhanden.'); return;
+        }
+        try {
+          await set(ref(state.db, `materialbahnhof/articles/${number}`), {bezeichnung: name});
+          el('articleNumberInput').value = ''; el('articleNameInput').value = '';
+          setLastResult('ok', `Artikel ${number} erfasst.`);
+        } catch (error) { setLastResult('error', error.message); }
+      });
+      el('exportHistory').addEventListener('click', exportHistory);
       el('saveMaterialChange').addEventListener('click', async () => {
         const place = el('materialPlaceSelect').value;
         const materialNumber = el('materialNumberInput').value.trim();
@@ -963,7 +1036,9 @@
     bindEvents();
     renderAll();
     setView(getViewFromHash(), false);
-    initFirebase();
+    el('exportFrom').value = new Date(Date.now() - 13 * 86400000).toISOString().slice(0, 10);
+    el('exportTo').value = new Date().toISOString().slice(0, 10);
+    initFirebase().catch(error => setLastResult('error', `Datenbankzugriff fehlgeschlagen: ${error.message}`));
   </script>
 </body>
 </html>
