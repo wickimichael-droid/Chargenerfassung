@@ -1,0 +1,29 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "materialbahnhof": {
+      ".read": "auth != null && auth.token.firebase.sign_in_provider == 'anonymous'",
+      "places": {
+        "$place": {
+          ".write": "auth != null && auth.token.firebase.sign_in_provider == 'anonymous'",
+          ".validate": "newData.hasChildren(['place','status','materialNumber','expectedCharge','actualCharge','updatedAt']) && newData.child('place').val() == $place && (newData.child('status').val() == 'ok' || newData.child('status').val() == 'error')"
+        }
+      },
+      "articles": {
+        "$number": {
+          ".write": "auth != null && auth.token.firebase.sign_in_provider == 'anonymous' && $number.matches(/^\\d{1,20}$/) && !data.exists()",
+          ".validate": "newData.hasChildren(['bezeichnung']) && newData.child('bezeichnung').isString() && newData.child('bezeichnung').val().length > 0 && newData.child('bezeichnung').val().length <= 120"
+        }
+      },
+      "history": {
+        ".indexOn": [
+          "timestamp"
+        ],
+        "$event": {
+          ".write": "auth != null && auth.token.firebase.sign_in_provider == 'anonymous' && ((!data.exists() && newData.exists() && newData.child('timestamp').isNumber() && newData.child('timestamp').val() <= now && newData.child('timestamp').val() > now - 60000) || (data.exists() && !newData.exists() && data.child('timestamp').isNumber() && data.child('timestamp').val() < now - 1209600000))"
+        }
+      }
+    }
+  }
+}
