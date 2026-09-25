@@ -263,11 +263,6 @@
 
   <div class="wrap">
     <div class="toolbar">
-      <button id="signInButton">Mit Google anmelden</button>
-      <button id="signOutButton" class="hidden">Abmelden</button>
-      <span id="authStatus" class="small">Nicht angemeldet</span>
-    </div>
-    <div class="toolbar">
       <button id="tab-scan" class="primary">Chargenerfassung</button>
       <button id="tab-material">Materialwechsel</button>
       <button id="tab-dashboard">Dashboard Schichtleiter</button>
@@ -424,7 +419,7 @@
         <div class="toolbar">
           <label>Von <input type="date" id="exportFrom"></label>
           <label>Bis <input type="date" id="exportTo"></label>
-          <button id="exportHistory">Excel exportieren</button>
+          <button id="exportHistory">Excel (CSV) exportieren</button>
         </div>
         <div class="history">
           <table>
@@ -448,8 +443,9 @@
 
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
-    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js';
-    import { getDatabase, ref, set, update, onValue, push, get, remove } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js';
+    import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js';
+    import { initializeAppCheck, ReCaptchaEnterpriseProvider } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app-check.js';
+    import { getDatabase, ref, set, update, onValue, push, get, query, orderByChild, endAt } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js';
 
     const places = [
       ...Array.from({ length: 15 }, (_, i) => String(101 + i)),
@@ -478,6 +474,7 @@
       db: null,
       auth: null,
       unsubscribe: null,
+      cleanupRunning: false,
       liveData: { places: {}, history: {}, articles: {} },
       initialized: false,
       dashboardFilter: 'all',
@@ -598,19 +595,14 @@
 
     async function initFirebase() {
       state.app = initializeApp(FIREBASE_CONFIG);
+      // Replace with the public reCAPTCHA v3 site key registered for this GitHub Pages domain.
+      const siteKey = '6Le6mc4tAAAAADoIOIqkZ8hwSNTbL96spQIlP6y1';
+      initializeAppCheck(state.app, {provider: new ReCaptchaEnterpriseProvider(siteKey), isTokenAutoRefreshEnabled: true});
       state.db = getDatabase(state.app);
       state.auth = getAuth(state.app);
-      el('signInButton').addEventListener('click', async () => {
-        try { await signInWithPopup(state.auth, new GoogleAuthProvider()); }
-        catch (error) { setLastResult('error', `Anmeldung fehlgeschlagen: ${error.message}`); }
-      });
-      el('signOutButton').addEventListener('click', () => signOut(state.auth));
       onAuthStateChanged(state.auth, async user => {
         if (state.unsubscribe) { state.unsubscribe(); state.unsubscribe = null; }
         state.initialized = false;
-        el('signInButton').classList.toggle('hidden', !!user);
-        el('signOutButton').classList.toggle('hidden', !user);
-        el('authStatus').textContent = user ? `Angemeldet: ${user.email || user.uid}` : 'Nicht angemeldet';
         if (!user) { state.liveData = defaultData(); renderAll(); return; }
         try {
           const placesRef = ref(state.db, 'materialbahnhof/places');
@@ -623,9 +615,25 @@
             state.liveData = snapshot.val() || defaultData();
             state.initialized = true;
             renderAll();
+            cleanupOldHistory().catch(error => setLastResult('error', `Historie konnte nicht bereinigt werden: ${error.message}`));
           }, error => setLastResult('error', `Datenbankzugriff fehlgeschlagen: ${error.message}`));
         } catch (error) { setLastResult('error', `Datenbankzugriff fehlgeschlagen: ${error.message}`); }
       });
+      if (!state.auth.currentUser) await signInAnonymously(state.auth);
+    }
+    async function cleanupOldHistory() {
+      if (state.cleanupRunning || !state.auth?.currentUser) return;
+      state.cleanupRunning = true;
+      try {
+        const cutoff = Date.now() - 14 * 86400000;
+        const historyRef = ref(state.db, 'materialbahnhof/history');
+        const old = await get(query(historyRef, orderByChild('timestamp'), endAt(cutoff - 1)));
+        const deletions = {};
+        old.forEach(child => {
+          if (typeof child.val()?.timestamp === 'number' && child.val().timestamp < cutoff) deletions[child.key] = null;
+        });
+        if (Object.keys(deletions).length) await update(historyRef, deletions);
+      } finally { state.cleanupRunning = false; }
     }
 
     function getPlaceData(place) {

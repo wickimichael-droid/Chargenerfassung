@@ -3,24 +3,25 @@
     ".read": false,
     ".write": false,
     "materialbahnhof": {
+      ".read": "auth != null && auth.token.firebase.sign_in_provider == 'anonymous'",
       "places": {
-        ".read": "auth != null && auth.token.operator === true",
         "$place": {
-          ".write": "auth != null && auth.token.operator === true",
-          ".validate": "newData.hasChildren(['place','status','materialNumber','expectedCharge','actualCharge','updatedAt']) && newData.child('place').val() === $place && (newData.child('status').val() === 'ok' || newData.child('status').val() === 'error')"
+          ".write": "auth != null && auth.token.firebase.sign_in_provider == 'anonymous'",
+          ".validate": "newData.hasChildren(['place','status','materialNumber','expectedCharge','actualCharge','updatedAt']) && newData.child('place').val() == $place && (newData.child('status').val() == 'ok' || newData.child('status').val() == 'error')"
         }
       },
       "articles": {
-        ".read": "auth != null && auth.token.operator === true",
         "$number": {
-          ".write": "auth != null && auth.token.operator === true && $number.matches(/^\\d{1,20}$/) && !data.exists()",
+          ".write": "auth != null && auth.token.firebase.sign_in_provider == 'anonymous' && $number.matches(/^\\d{1,20}$/) && !data.exists()",
           ".validate": "newData.hasChildren(['bezeichnung']) && newData.child('bezeichnung').isString() && newData.child('bezeichnung').val().length > 0 && newData.child('bezeichnung').val().length <= 120"
         }
       },
       "history": {
-        ".read": "auth != null && auth.token.operator === true",
+        ".indexOn": [
+          "timestamp"
+        ],
         "$event": {
-          ".write": "auth != null && auth.token.operator === true && ((!data.exists() && newData.exists() && newData.child('timestamp').isNumber() && newData.child('timestamp').val() <= now && newData.child('timestamp').val() > now - 60000) || (data.exists() && !newData.exists() && data.child('timestamp').val() < now - 1209600000))"
+          ".write": "auth != null && auth.token.firebase.sign_in_provider == 'anonymous' && ((!data.exists() && newData.exists() && newData.child('timestamp').isNumber() && newData.child('timestamp').val() <= now && newData.child('timestamp').val() > now - 60000) || (data.exists() && !newData.exists() && data.child('timestamp').isNumber() && data.child('timestamp').val() < now - 1209600000))"
         }
       }
     }
