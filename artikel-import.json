@@ -1,0 +1,456 @@
+{
+  "materialbahnhof": {
+    "articles": {
+      "107646": {
+        "bezeichnung": "GRA ABS MAGNUM 8391"
+      },
+      "102172": {
+        "bezeichnung": "GRA ABS TERLURAN GP22 NATUR"
+      },
+      "115673": {
+        "bezeichnung": "GRA APINAT DP1888"
+      },
+      "115681": {
+        "bezeichnung": "GRA APINAT DP2267"
+      },
+      "100043": {
+        "bezeichnung": "GRA ARBOBLEND 1373 X"
+      },
+      "100044": {
+        "bezeichnung": "GRA ARBOBLEND 4487 X"
+      },
+      "160350": {
+        "bezeichnung": "GRA BDS K-RESIN01 NATUR"
+      },
+      "100158": {
+        "bezeichnung": "GRA BIO-PA ARBOBLEND 2327X"
+      },
+      "116734": {
+        "bezeichnung": "GRA BIO-PA ARBOBLEND 4287X"
+      },
+      "114111": {
+        "bezeichnung": "GRA BIOGRADE C 5508"
+      },
+      "112488": {
+        "bezeichnung": "GRA CO-PS FK 43-006 E N"
+      },
+      "100211": {
+        "bezeichnung": "GRA CRISTAL RENEW DN011-30"
+      },
+      "100029": {
+        "bezeichnung": "GRA DESMOPAN DP.3055D 000000"
+      },
+      "100031": {
+        "bezeichnung": "GRA DESMOPAN DP.3055D 000000"
+      },
+      "100033": {
+        "bezeichnung": "GRA DESMOPAN DP.3055D 000000"
+      },
+      "100034": {
+        "bezeichnung": "GRA DESMOPAN DP.3055D 000000"
+      },
+      "100035": {
+        "bezeichnung": "GRA DESMOPAN DP.3055D 000000"
+      },
+      "100036": {
+        "bezeichnung": "GRA DESMOPAN DP.3055D 000000"
+      },
+      "116440": {
+        "bezeichnung": "GRA DOW HDPE KT 10000 UE"
+      },
+      "160300": {
+        "bezeichnung": "GRA EASTAR BR003 COPOLYESTER"
+      },
+      "114561": {
+        "bezeichnung": "GRA EASTAR DN011"
+      },
+      "100209": {
+        "bezeichnung": "GRA EASTAR RENEW BR003-30"
+      },
+      "100207": {
+        "bezeichnung": "GRA EASTAR RENEW BR003-50"
+      },
+      "100061": {
+        "bezeichnung": "GRA ECO SELEKT XP 211 R30 (bb)"
+      },
+      "100062": {
+        "bezeichnung": "GRA ECO SELEKT XP 211 R50 (bb)"
+      },
+      "114626": {
+        "bezeichnung": "GRA ECOCLEAR E04 100 (rPET)"
+      },
+      "100017": {
+        "bezeichnung": "GRA ECOTRIA JN200-CR30"
+      },
+      "100240": {
+        "bezeichnung": "GRA ECOTRIA JN200-CR30"
+      },
+      "100045": {
+        "bezeichnung": "GRA EXONMOBIL PP 1364 E2"
+      },
+      "106518": {
+        "bezeichnung": "GRA GRILAMID XE4019"
+      },
+      "160733": {
+        "bezeichnung": "GRA GRILON BS/2 NATUR"
+      },
+      "117072": {
+        "bezeichnung": "GRA HDPE EGYPTENE HD 6070 UA"
+      },
+      "116157": {
+        "bezeichnung": "GRA HOSTAFORM C 9021 GV3/10"
+      },
+      "116718": {
+        "bezeichnung": "GRA HOSTAFORM C 9021 TF"
+      },
+      "100206": {
+        "bezeichnung": "GRA HOSTALEN GC 7260"
+      },
+      "114200": {
+        "bezeichnung": "GRA L-ARGININE M21781"
+      },
+      "114731": {
+        "bezeichnung": "GRA LDPE SPB 208 GREEN"
+      },
+      "100049": {
+        "bezeichnung": "GRA LDPE TOTAL 1200MN18C"
+      },
+      "100050": {
+        "bezeichnung": "GRA LLDPE DOWLEX 2552E"
+      },
+      "102563": {
+        "bezeichnung": "GRA LLDPE FLEXIRENE MS 40 A"
+      },
+      "100051": {
+        "bezeichnung": "GRA LLDPE INEOS PF1320AZ"
+      },
+      "103667": {
+        "bezeichnung": "GRA LLDPE M200024"
+      },
+      "112283": {
+        "bezeichnung": "GRA LURAN 388 S TRANSP 77770"
+      },
+      "160709": {
+        "bezeichnung": "GRA LURAN 388 S TRANSP 77770"
+      },
+      "107190": {
+        "bezeichnung": "GRA MOPLEN HP740J"
+      },
+      "107301": {
+        "bezeichnung": "GRA MOPLEN RP398T"
+      },
+      "160377": {
+        "bezeichnung": "GRA NORYL 731S SCHWARZ 701"
+      },
+      "160660": {
+        "bezeichnung": "GRA NOVODUR P 2 MC NATUR"
+      },
+      "160431": {
+        "bezeichnung": "GRA PA 6 DURETHAN B 30 S NATUR"
+      },
+      "160466": {
+        "bezeichnung": "GRA PA 6.6 DURETHAN A 30 S"
+      },
+      "160814": {
+        "bezeichnung": "GRA PA 6.6 ULTRAMID A 3 EG 6"
+      },
+      "160245": {
+        "bezeichnung": "GRA PA GRILAMID TR 90 LXS"
+      },
+      "100076": {
+        "bezeichnung": "GRA PC ASA REPOL PCASA4S20"
+      },
+      "117471": {
+        "bezeichnung": "GRA PC Calibre PC 201 T"
+      },
+      "117463": {
+        "bezeichnung": "GRA PC SABIC LEXANTM RESIN"
+      },
+      "100208": {
+        "bezeichnung": "GRA PCTG DN011-50"
+      },
+      "114723": {
+        "bezeichnung": "GRA PE SHC 7260 GREEN"
+      },
+      "100040": {
+        "bezeichnung": "GRA PE-HD BRASKEM SHA7260"
+      },
+      "112674": {
+        "bezeichnung": "GRA PIOLEN P G30CH13"
+      },
+      "100239": {
+        "bezeichnung": "GRA POM HOSTAFORM C 9021"
+      },
+      "160199": {
+        "bezeichnung": "GRA POM HOSTAFORM C 9021 G"
+      },
+      "160180": {
+        "bezeichnung": "GRA POM HOSTAFORM C-13021"
+      },
+      "114324": {
+        "bezeichnung": "GRA PP BOREALIS HG385 MO"
+      },
+      "111376": {
+        "bezeichnung": "GRA PP BRASKEM H357-09RSB"
+      },
+      "117358": {
+        "bezeichnung": "GRA PP BRASKEM H357-09RSB"
+      },
+      "100244": {
+        "bezeichnung": "GRA PP CERTYFORM P1001"
+      },
+      "100243": {
+        "bezeichnung": "GRA PP CERTYFORM P1141"
+      },
+      "100046": {
+        "bezeichnung": "GRA PP LIGHT PP5 FDAMF20 2"
+      },
+      "100039": {
+        "bezeichnung": "GRA PP LIGHT PP5 FDAMF20 4"
+      },
+      "108707": {
+        "bezeichnung": "GRA PP LUMICENE MR 30 MC 2"
+      },
+      "100109": {
+        "bezeichnung": "GRA PP LUMICENE MR10 MX0"
+      },
+      "160288": {
+        "bezeichnung": "GRA PP MOPLEN EP240H NATUR"
+      },
+      "105996": {
+        "bezeichnung": "GRA PP MOPLEN HP 548 L NATUR"
+      },
+      "111708": {
+        "bezeichnung": "GRA PP NATUR INEOS 101-CA06"
+      },
+      "115983": {
+        "bezeichnung": "GRA PP PURELL EP374M"
+      },
+      "111724": {
+        "bezeichnung": "GRA PP PURELL HP 548 N"
+      },
+      "117340": {
+        "bezeichnung": "GRA PP PURELL HP570M"
+      },
+      "111422": {
+        "bezeichnung": "GRA PP PURELL HP570M  *SACKWAR"
+      },
+      "111430": {
+        "bezeichnung": "GRA PP PURELL HP570M  *SILO*"
+      },
+      "117447": {
+        "bezeichnung": "GRA PP TIPPLEN R 359  NAT"
+      },
+      "107816": {
+        "bezeichnung": "GRA PP TIPPLEN R 359  NATUR"
+      },
+      "100092": {
+        "bezeichnung": "GRA PP TIPPLEN R 360  NATUR"
+      },
+      "100251": {
+        "bezeichnung": "GRA PP-H TOTAL PP 9020"
+      },
+      "100047": {
+        "bezeichnung": "GRA PP5 FDAMF20"
+      },
+      "114936": {
+        "bezeichnung": "GRA PPC KWR 620 WT FDA"
+      },
+      "116246": {
+        "bezeichnung": "GRA PPC KWR 620 WT FDA"
+      },
+      "115576": {
+        "bezeichnung": "GRA PPC KWR 620 WT FDA gereini"
+      },
+      "100063": {
+        "bezeichnung": "GRA PPC KWR 621-20 FDA"
+      },
+      "113670": {
+        "bezeichnung": "GRA PPC KWR 621-20 FDA"
+      },
+      "116238": {
+        "bezeichnung": "GRA PPC KWR 621-20 FDA"
+      },
+      "117579": {
+        "bezeichnung": "GRA PPH EFP413 (REEF)"
+      },
+      "109363": {
+        "bezeichnung": "GRA PPH TOTAL 5042 NATUR"
+      },
+      "100070": {
+        "bezeichnung": "GRA PREPROP /F/278 WEISS MFR 2"
+      },
+      "100069": {
+        "bezeichnung": "GRA PREPROP /F/323 MFR 25-30"
+      },
+      "100068": {
+        "bezeichnung": "GRA PREPROP /F/323 NATUR MFR 2"
+      },
+      "100106": {
+        "bezeichnung": "GRA PREPROP /F/583 rPPR"
+      },
+      "160253": {
+        "bezeichnung": "GRA PS CRYSTAL 1160"
+      },
+      "112178": {
+        "bezeichnung": "GRA PS EDISTIR N3910"
+      },
+      "102300": {
+        "bezeichnung": "GRA PURELL GC 7260G"
+      },
+      "100053": {
+        "bezeichnung": "GRA REGRANULAT PET_G RECOPLAST"
+      },
+      "100052": {
+        "bezeichnung": "GRA REGRANULAT PET_GAG RECOPLA"
+      },
+      "117374": {
+        "bezeichnung": "GRA REGRANULAT PP/TPE"
+      },
+      "117188": {
+        "bezeichnung": "GRA REGRANULAT PP/TPE RECOPLAS"
+      },
+      "117196": {
+        "bezeichnung": "GRA RPC MAKROLON *BIG BAG*"
+      },
+      "100178": {
+        "bezeichnung": "GRA RPS SICOSTYROLO CR H 3546"
+      },
+      "160679": {
+        "bezeichnung": "GRA SAN LURAN 388 S NATUR"
+      },
+      "100038": {
+        "bezeichnung": "GRA SELEKT XP 210"
+      },
+      "100042": {
+        "bezeichnung": "GRA SELEKT XP 211 (bb)"
+      },
+      "100041": {
+        "bezeichnung": "GRA SELEKT XP 310 (bb)"
+      },
+      "100037": {
+        "bezeichnung": "GRA SELEKT XP 311 (bb)"
+      },
+      "117242": {
+        "bezeichnung": "GRA SELENIS SELEKT XP 210"
+      },
+      "113743": {
+        "bezeichnung": "GRA SELFY MC 912"
+      },
+      "100077": {
+        "bezeichnung": "GRA SELFY MD 912 (bb)"
+      },
+      "100241": {
+        "bezeichnung": "GRA SKYGREEN JN200"
+      },
+      "117331": {
+        "bezeichnung": "GRA SKYGREEN JN200 *SILO*"
+      },
+      "114197": {
+        "bezeichnung": "GRA SOLUPLUS"
+      },
+      "105198": {
+        "bezeichnung": "GRA THERMOLAST HTF 4918/54 w3"
+      },
+      "113018": {
+        "bezeichnung": "GRA THERMOLAST K TF 7 CGN"
+      },
+      "108758": {
+        "bezeichnung": "GRA THERMOLAST TF 9 CGT"
+      },
+      "113131": {
+        "bezeichnung": "GRA TOTAL PPC 6742"
+      },
+      "161225": {
+        "bezeichnung": "GRA TOTAL PPH 5060"
+      },
+      "113573": {
+        "bezeichnung": "GRA TOTAL PPH 9040"
+      },
+      "102350": {
+        "bezeichnung": "GRA TPE DYNAFLEX LC 325 - 014"
+      },
+      "100225": {
+        "bezeichnung": "GRA TPE GLS 317-127 EU (NEW)"
+      },
+      "100224": {
+        "bezeichnung": "GRA TPE GLS 325-014 EU (NEW)"
+      },
+      "100227": {
+        "bezeichnung": "GRA TPE GLS 484-119 (NEW)"
+      },
+      "101486": {
+        "bezeichnung": "GRA TPE LC 317-127"
+      },
+      "161292": {
+        "bezeichnung": "GRA TPE LC 322-056"
+      },
+      "113808": {
+        "bezeichnung": "GRA TPE LC 484-119"
+      },
+      "160040": {
+        "bezeichnung": "GRA TPE MULTIFLEX"
+      },
+      "160237": {
+        "bezeichnung": "GRA TPE MULTIFLEX"
+      },
+      "114405": {
+        "bezeichnung": "GRA TPE THERMOLAST"
+      },
+      "161152": {
+        "bezeichnung": "GRA TPE THERMOLAST HTF 6040-54"
+      },
+      "103110": {
+        "bezeichnung": "GRA TPE THERMOLAST HTF 9370/98"
+      },
+      "161179": {
+        "bezeichnung": "GRA TPE THERMOLAST K TF 3 ATL"
+      },
+      "160172": {
+        "bezeichnung": "GRA TPE THERMOLAST K TF 7 MAA"
+      },
+      "161128": {
+        "bezeichnung": "GRA TPE THERMOLAST TF 2 BNB"
+      },
+      "111406": {
+        "bezeichnung": "GRA TPE THERMOLAST TF 5 CGT"
+      },
+      "114804": {
+        "bezeichnung": "GRA TPE VERSAFLEX HC1100-40"
+      },
+      "112380": {
+        "bezeichnung": "GRA ULTRADUR PBT B 4500 FC"
+      },
+      "114219": {
+        "bezeichnung": "GRA WS-3 M17652"
+      },
+      "114014": {
+        "bezeichnung": "GRA WS-5 SY762308"
+      },
+      "116254": {
+        "bezeichnung": "GRA rPOM WEISS"
+      },
+      "100210": {
+        "bezeichnung": "GRA rPP 510-NA-L Rhino"
+      },
+      "100075": {
+        "bezeichnung": "GRA rPP OCEAN WORKS"
+      },
+      "100159": {
+        "bezeichnung": "GRA rPP PCR KINGFA CK-91024 (R"
+      },
+      "115347": {
+        "bezeichnung": "GRA rPP PP5-FDAMF20"
+      },
+      "117099": {
+        "bezeichnung": "GRA rPP RECYCLING EBNAT"
+      },
+      "100219": {
+        "bezeichnung": "GRA rPPH PREPROP /F/900 natur"
+      },
+      "100172": {
+        "bezeichnung": "GRA rTPE THERMOLAST"
+      }
+    }
+  }
+}
